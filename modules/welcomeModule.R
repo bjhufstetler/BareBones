@@ -1,4 +1,5 @@
-# Welcome Modeule
+# Welcome Module
+# Uses: {base, shiny}
 
 welcomeUI <- function(id){
   ns <- shiny::NS(id)
@@ -23,7 +24,7 @@ welcomeUI <- function(id){
 
 welcome <- function(input, output, session){
   id <- base::gsub("-$", "", session$ns(""))
-  shiny::showModal(us = welcomeUI(id))
+  shiny::showModal(ui = welcomeUI(id))
   
   shiny::observeEvent(input$play, {
     shiny::removeModal()

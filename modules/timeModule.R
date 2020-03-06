@@ -1,4 +1,5 @@
 # Time Module
+# Uses: {base, shiny}
 
 timeUI <- function(id){
   ns <- shiny::NS(id)
@@ -27,7 +28,7 @@ time <- function(input,
     if(started()){
       invalidateLater(1000, session)
       isolate({
-        newTime <- TimeR() + 1
+        newTime <- timeR() + 1
         timeR(newTime)
       })
     }

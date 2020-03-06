@@ -1,4 +1,5 @@
 # utils
+# Uses: {base}
 
 filterFound <- function(l){
   found <- base::unlist(base::lapply(l, `[[`, "found"), use.names = FALSE)
@@ -11,7 +12,11 @@ allFound <- function(l){
 }
 
 asNull <- function(x){
-  base::ifelse(base::is.na(x), NULL, x)
+  if(base::is.na(x)){
+    NULL
+  } else {
+    x    
+  }
 }
 
 whichHex <- function(l, module){
@@ -29,5 +34,9 @@ whichShow <- function(l, indice = NULL){
   ts <- base::unlist(base::lapply(l[res], `[[`, "ts"), use.names = FALSE)
   res <- base::names(l)[res]
   res <- res[base::order(ts, decreasing = FALSE)]
-  ifelse(base::is.null(indice), res, asNull(res[indice]))
+  if(base::is.null(indice)){
+    res
+  } else {
+    asNull(res[indice])
+  }
 }

@@ -6,9 +6,9 @@
 
 # Packages
 
-library("shiny")
-library("glue")
-library("dplyr")
+#library("shiny")
+#library("glue")
+#library("dplyr")
 
 # Modules
 
@@ -24,7 +24,7 @@ source("functions/utils.R")
 
 n_hex <- 10
 
-boardSize <- 37 # number of places a card can be placed
+boardSize <- 21 # number of places a card can be placed
 cardEdgeCount <- 6 # number of edges a card has
 leftOffset <- 200
 bottomOffset <- 10
@@ -54,34 +54,20 @@ relationships <- base::as.matrix(
                      18,7,6,16,33,34,   #17
                      36,19,7,17,34,35,  #18
                      37,8,2,7,18,36,    #19
-                     0,0,21,8,37,0,     #20
-                     0,0,22,9,8,20,     #21
-                     0,0,23,10,9,21,    #22
-                     0,0,0,24,10,22,    #23
-                     23,0,0,25,11,10,   #24
-                     24,0,0,26,12,11,   #25
-                     25,0,0,0,27,12,    #26
-                     12,26,0,0,28,13,   #27
-                     13,27,0,0,29,14,   #28
-                     14,28,0,0,0,30,    #29
-                     15,14,29,0,0,31,   #30
-                     16,15,30,0,0,32,   #31
-                     33,16,31,0,0,0,    #32
-                     34,17,16,32,0,0,   #33
-                     35,18,17,33,0,0,   #34
-                     0,36,18,34,0,0,    #35
-                     0,37,19,18,35,0,   #36
-                     0,20,8,19,36,0),   #37
+                     0, 0, 0, 0, 0, 0,  #Player Card 1
+                     0, 0, 0, 0, 0, 0), #Player Card 2
     neighboredge = rep(c(4,5,6,1,2,3),
                        boardSize),
     xLoc = leftOffset + c(208.5, 208.5, 312.75, 312.75, 208.5,
                           104.25, 104.25, 208.5, 312.75, 417,
                           417, 417, 312.75, 208.5, 104.25,
-                          0, 0, 0, 104.25, rep(NA, 18)),
+                          0, 0, 0, 104.25, 
+                          -120, -120),
     yLoc = bottomOffset + c(240, 360, 300, 180, 120,
                             180, 300, 480, 420, 360,
                             240, 120, 60, 0, 60,
-                            120, 240, 360, 420, rep(NA, 18))
+                            120, 240, 360, 420, 
+                            300, 180)
     )
   )
 

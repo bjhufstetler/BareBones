@@ -9,8 +9,17 @@ function(input, output, session){
   start <- shiny::callModule(module = welcome, id = "welcome")
   timer <- shiny::callModule(module = time, id = "timer", start = start)
   
-  hex_png <- base::sample(base::list.files(path = "www/hex/", pattern = "png$"), n_hex)
+  hex_png <- base::sample(base::list.files(path = "www/hex/", pattern = "png$"), boardSize)
   hex_png <- base::sample(base::rep(hex_png, 2))
+  
+  boardCards <- shiny::reactiveValues(edge1 = rep(0, boardSize),
+                                      edge2 = rep(0, boardSize),
+                                      edge3 = rep(0, boardSize),
+                                      edge4 = rep(0, boardSize),
+                                      edge5 = rep(0, boardSize),
+                                      edge6 = rep(0, boardSize),
+                                      occupied = rep(FALSE, boardSize),
+                                      available = rep(FALSE, boardSize))
   
   results_mods <- shiny::reactiveValues()
   results_mods_parse <- shiny::reactiveValues(all = NULL, 
@@ -21,7 +30,7 @@ function(input, output, session){
   block <- shiny::reactiveValues(x = NULL)
   
   base::lapply(
-    X = base::seq_len(n_hex * 2),
+    X = base::seq_len(21),
     FUN = function(x) {
       results_mods[[base::paste0("module", x)]] <- shiny::callModule(
         module = hex,

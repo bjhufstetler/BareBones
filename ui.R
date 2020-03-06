@@ -23,7 +23,7 @@ shiny::fluidPage(
     timeUI("timer"),
     tags$br(),
     base::lapply(
-      X = base::seq_len(19),
+      X = base::seq_len(21),
       FUN = function(x) {
         hexUI(id = base::paste0("module", x), id2 = x)
       }

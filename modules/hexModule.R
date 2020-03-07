@@ -49,31 +49,32 @@ hexUI <- function(id, id2){
 
 hex <- function(input, 
                 output, 
-                session, 
-                reset = shiny::reactiveValues(x = NULL),
-                block = shiny::reactiveValues(x = NULL),
-                faceIMG, s1, s2, s3, s4, s5, s6, c1, c2, id2){
+                session,
+                id2, bc){
   clickStatus <- shiny::reactiveValues(show = FALSE,
                                        ts = base::Sys.time(),
                                        found = FALSE)
+  # bc <- base::lapply(bc, function(x) bc[[x]])
+  # base::unlist(bc, use.names = FALSE)
+  print(isolate(bc$e1[id2]))
+  
   shiny::observeEvent(input$hexClick,{
     if(id2 > 19){
       clickStatus$show <- !clickStatus$show
-      #clickStatus$ts <- base::Sys.time()
     }
   })
   
   output$hex <- shiny::renderImage({
     if(clickStatus$show){
       base::list(
-        src = "www/spaces/beige1.png",
+        src = "www/spaces/beige3.png",
         width = 139,
         height = 120,
         contentType = "image/png"
       )
     } else {
       base::list(
-        src = faceIMG,
+        src = isolate(bc$im[id2]),
         width = 139,
         height = 120,
         contentType = "image/png")
@@ -81,9 +82,9 @@ hex <- function(input,
     }, deleteFile = FALSE)
   
   output$s1 <- shiny::renderImage({
-    if(s1 != 0){
+    if(isolate(bc$e1[id2]) != 0){
       base::list(
-        src = base::paste0("www/nums/nums_0", s1, ".png"),
+        src = base::paste0("www/nums/nums_0", isolate(bc$e1[id2]), ".png"),
         width = 20,
         height = 20,
         contentType = "image/png"
@@ -93,9 +94,9 @@ hex <- function(input,
   }, deleteFile = FALSE)
   
   output$s2 <- shiny::renderImage({
-    if(s2 != 0){
+    if(isolate(bc$e2[id2]) != 0){
       base::list(
-        src = base::paste0("www/nums/nums_0", s2, ".png"),
+        src = base::paste0("www/nums/nums_0", isolate(bc$e2[id2]), ".png"),
         width = 20,
         height = 20,
         contentType = "image/png"
@@ -105,9 +106,9 @@ hex <- function(input,
   }, deleteFile = FALSE)
   
   output$s3 <- shiny::renderImage({
-    if(s3 != 0){
+    if(isolate(bc$e3[id2]) != 0){
       base::list(
-        src = base::paste0("www/nums/nums_0", s3, ".png"),
+        src = base::paste0("www/nums/nums_0", isolate(bc$e3[id2]), ".png"),
         width = 20,
         height = 20,
         contentType = "image/png"
@@ -117,9 +118,9 @@ hex <- function(input,
   }, deleteFile = FALSE)
   
   output$s4 <- shiny::renderImage({
-    if(s4 != 0){
+    if(isolate(bc$e4[id2]) != 0){
       base::list(
-        src = base::paste0("www/nums/nums_0", s4, ".png"),
+        src = base::paste0("www/nums/nums_0", isolate(bc$e4[id2]), ".png"),
         width = 20,
         height = 20,
         contentType = "image/png"
@@ -129,9 +130,9 @@ hex <- function(input,
   }, deleteFile = FALSE)
   
   output$s5 <- shiny::renderImage({
-    if(s5 != 0){
+    if(isolate(bc$e5[id2]) != 0){
       base::list(
-        src = base::paste0("www/nums/nums_0", s5, ".png"),
+        src = base::paste0("www/nums/nums_0", isolate(bc$e5[id2]), ".png"),
         width = 20,
         height = 20,
         contentType = "image/png"
@@ -141,9 +142,9 @@ hex <- function(input,
   }, deleteFile = FALSE)
   
   output$s6 <- shiny::renderImage({
-    if(s6 != 0){
+    if(isolate(bc$e6[id2]) != 0){
       base::list(
-        src = base::paste0("www/nums/nums_0", s6, ".png"),
+        src = base::paste0("www/nums/nums_0", isolate(bc$e6[id2]), ".png"),
         width = 20,
         height = 20,
         contentType = "image/png"
@@ -153,7 +154,7 @@ hex <- function(input,
   }, deleteFile = FALSE)
   
   output$c1 <- shiny::renderImage({
-    if(c1 != 0){
+    if(isolate(bc$c1[id2]) != 0){
       base::list(
         src = base::paste0("www/chits/chits_01.png"),
         width = 20,
@@ -165,7 +166,7 @@ hex <- function(input,
   }, deleteFile = FALSE)
   
   output$c2 <- shiny::renderImage({
-    if(c2 != 0){
+    if(isolate(bc$c2[id2]) != 0){
       base::list(
         src = base::paste0("www/chits/chits_02.png"),
         width = 20,

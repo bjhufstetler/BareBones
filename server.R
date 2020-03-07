@@ -37,7 +37,10 @@ function(input, output, session){
                                       av = base::rep(FALSE, boardSize),
                                       im = c("www/spaces/red.png",
                                              base::rep("www/spaces/beige2.png", 18),
-                                             base::paste0("www/hex/", hex_png[1:2])))
+                                             base::paste0("www/hex/", hex_png[1:2])),
+                                      se = c(base::rep(0, boardSize))
+                                      )
+  
   # Create a reactive object to hold the player's scores and captured chits
   scores <- shiny::reactiveValues(s1 = 0,
                                   s2 = 0,
@@ -50,16 +53,8 @@ function(input, output, session){
     results_mods[[base::paste0("module", x)]] <- shiny::callModule(
       module = hex,
       id = base::paste0("module", x),
-      faceIMG = boardCards$im[x],
-      s1 = boardCards$e1[x],
-      s2 = boardCards$e2[x],
-      s3 = boardCards$e3[x],
-      s4 = boardCards$e4[x],
-      s5 = boardCards$e5[x],
-      s6 = boardCards$e6[x],
-      c1 = boardCards$c1[x],
-      c2 = boardCards$c2[x],
-      id2 = x
+      id2 = x,
+      bc = boardCards
     )
   }
   

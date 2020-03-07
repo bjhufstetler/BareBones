@@ -27,14 +27,6 @@ shiny::fluidPage(
   tags$div(
     style = "width: 200px; margin: center;",
     scoreUI("score"),
-    # Get keyboard input
-    tags$script('
-    pressedKeyCount = 0;
-    $(document).on("keydown", function (e) {
-       Shiny.onInputChange("pressedKey", pressedKeyCount++);
-       Shiny.onInputChange("pressedKeyID", e.which);
-    });'
-    )
   ),
   tags$br(),
   
@@ -46,5 +38,14 @@ shiny::fluidPage(
         hexUI(id = base::paste0("module", x), id2 = x)
       }
     )
+  ),
+  
+  # Get keyboard input
+  tags$script('
+    pressedKeyCount = 0;
+    $(document).on("keydown", function (e) {
+       Shiny.onInputChange("pressedKey", pressedKeyCount++);
+       Shiny.onInputChange("pressedKeyID", e.which);
+    });'
   )
 )

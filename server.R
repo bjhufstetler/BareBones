@@ -38,7 +38,7 @@ function(input, output, session){
                                       im = c("www/spaces/red.png",
                                              base::rep("www/spaces/beige2.png", 18),
                                              base::paste0("www/hex/", hex_png[1:2])),
-                                      se = c(base::rep(0, boardSize))
+                                      se = c(base::rep(FALSE, boardSize))
                                       )
   
   # Create a reactive object to hold the player's scores and captured chits
@@ -56,6 +56,8 @@ function(input, output, session){
       id2 = x,
       bc = boardCards
     )
+    #boardCards$se[x] <- isolate(results_mods$)
+    print(isolate(unlist(lapply(results_mods, `[[`, base::paste0("module",x)), use.names = FALSE)))
   }
   
   base::lapply(
@@ -73,28 +75,30 @@ function(input, output, session){
   }, ignoreInit = TRUE)
   
   shiny::observeEvent(input$pressedKey, {
-    for(card in c(20, 21)){
-      if(input$pressedKeyID == 37){
-      rCard <- c(boardCards$e2[card], boardCards$e3[card], boardCards$e4[card],
-                 boardCards$e5[card], boardCards$e6[card], boardCards$e1[card])
-      } else if(input$pressedKeyID == 39){
-        rCard <- c(boardCards$e6[card], boardCards$e1[card], boardCards$e2[card],
-                   boardCards$e3[card], boardCards$e4[card], boardCards$e5[card])
-      } else {
-        rCard <- c(boardCards$e1[card], boardCards$e2[card], boardCards$e3[card],
-                   boardCards$e4[card], boardCards$e5[card], boardCards$e6[card])
+    if(input$pressedKeyID == 37 | input$pressedKeyID == 39){
+      for(card in c(20, 21)){
+        if(input$pressedKeyID == 37){
+        rCard <- c(boardCards$e2[card], boardCards$e3[card], boardCards$e4[card],
+                   boardCards$e5[card], boardCards$e6[card], boardCards$e1[card])
+        } else if(input$pressedKeyID == 39){
+          rCard <- c(boardCards$e6[card], boardCards$e1[card], boardCards$e2[card],
+                     boardCards$e3[card], boardCards$e4[card], boardCards$e5[card])
+        } else {
+          rCard <- c(boardCards$e1[card], boardCards$e2[card], boardCards$e3[card],
+                     boardCards$e4[card], boardCards$e5[card], boardCards$e6[card])
+        }
+        boardCards$e1[card] <- rCard[1]
+        boardCards$e2[card] <- rCard[2]
+        boardCards$e3[card] <- rCard[3]
+        boardCards$e4[card] <- rCard[4]
+        boardCards$e5[card] <- rCard[5]
+        boardCards$e6[card] <- rCard[6]
+        refreshCard(card)
       }
-      boardCards$e1[card] <- rCard[1]
-      boardCards$e2[card] <- rCard[2]
-      boardCards$e3[card] <- rCard[3]
-      boardCards$e4[card] <- rCard[4]
-      boardCards$e5[card] <- rCard[5]
-      boardCards$e6[card] <- rCard[6]
-      refreshCard(card)
     }
   })
   
-  output$results = renderPrint({input$keystroke}) 
+  #output$results = renderPrint({input$keystroke}) 
   
 }
 

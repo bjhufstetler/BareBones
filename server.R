@@ -77,16 +77,24 @@ function(input, output, session){
     session$reload()
   }, ignoreInit = TRUE)
   
-  shiny::observeEvent(input$keystroke, {
+  shiny::observeEvent(input$pressedKey, {
     for(card in c(20, 21)){
-      rCard <- c(boardCards$e1[card], boardCards$e2[card], boardCards$e3[card],
-                 boardCards$e4[card], boardCards$e5[card], boardCards$e6[card])
-      boardCards$e1[card] <- rCard[2]
-      boardCards$e2[card] <- rCard[3]
-      boardCards$e3[card] <- rCard[4]
-      boardCards$e4[card] <- rCard[5]
-      boardCards$e5[card] <- rCard[6]
-      boardCards$e6[card] <- rCard[1]
+      if(input$pressedKeyID == 37){
+      rCard <- c(boardCards$e2[card], boardCards$e3[card], boardCards$e4[card],
+                 boardCards$e5[card], boardCards$e6[card], boardCards$e1[card])
+      } else if(input$pressedKeyID == 39){
+        rCard <- c(boardCards$e6[card], boardCards$e1[card], boardCards$e2[card],
+                   boardCards$e3[card], boardCards$e4[card], boardCards$e5[card])
+      } else {
+        rCard <- c(boardCards$e1[card], boardCards$e2[card], boardCards$e3[card],
+                   boardCards$e4[card], boardCards$e5[card], boardCards$e6[card])
+      }
+      boardCards$e1[card] <- rCard[1]
+      boardCards$e2[card] <- rCard[2]
+      boardCards$e3[card] <- rCard[3]
+      boardCards$e4[card] <- rCard[4]
+      boardCards$e5[card] <- rCard[5]
+      boardCards$e6[card] <- rCard[6]
       refreshCard(card)
     }
   })

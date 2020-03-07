@@ -27,12 +27,14 @@ shiny::fluidPage(
   tags$div(
     style = "width: 200px; margin: center;",
     scoreUI("score"),
-    verbatimTextOutput("results"),
+    # Get keyboard input
     tags$script('
-    $(document).on("keypress", function (e) {
-       Shiny.onInputChange("keystroke", e.which);
-    });
-  ') 
+    pressedKeyCount = 0;
+    $(document).on("keydown", function (e) {
+       Shiny.onInputChange("pressedKey", pressedKeyCount++);
+       Shiny.onInputChange("pressedKeyID", e.which);
+    });'
+    )
   ),
   tags$br(),
   

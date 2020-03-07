@@ -19,9 +19,25 @@ shiny::fluidPage(
   tags$br(),
   
   tags$div(
+    style = "width: 200px; margin: center;",
+    timeUI("timer")
+    ),
+  tags$br(),
+  
+  tags$div(
+    style = "width: 200px; margin: center;",
+    scoreUI("score"),
+    verbatimTextOutput("results"),
+    tags$script('
+    $(document).on("keypress", function (e) {
+       Shiny.onInputChange("keystroke", e.which);
+    });
+  ') 
+  ),
+  tags$br(),
+  
+  tags$div(
     style = "width: 650px; margin: auto;",
-    timeUI("timer"),
-    tags$br(),
     base::lapply(
       X = base::seq_len(21),
       FUN = function(x) {

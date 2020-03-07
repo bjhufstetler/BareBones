@@ -9,74 +9,40 @@ hexUI <- function(id, id2){
       shiny::imageOutput(
         outputId = ns("hex"),
         click = clickOpts(id = ns("hexClick"), clip = FALSE),
-        width = 139,
-        height = 120,
-        inline = TRUE
+        width = 139, height = 120, inline = TRUE
       )
     ),
     shiny::absolutePanel(
       bottom = (relationships[id2, 6] + 90), left = (relationships[id2, 5] + 60),
-      shiny::imageOutput(
-        outputId = ns("s1"),
-        click = clickOpts(id = ns("hexClick"), clip = FALSE),
-        inline = TRUE
-      )
+      shiny::imageOutput(outputId = ns("s1"), inline = TRUE)
     ),
     shiny::absolutePanel(
       bottom = (relationships[id2, 6] + 70), left = (relationships[id2, 5] + 95), 
-      shiny::imageOutput(
-        outputId = ns("s2"),
-        click = clickOpts(id = ns("hexClick"), clip = FALSE),
-        inline = TRUE
-      )
+      shiny::imageOutput(outputId = ns("s2"), inline = TRUE)
     ),
     shiny::absolutePanel(
       bottom = (relationships[id2, 6] + 30), left = (relationships[id2, 5] + 95),
-      shiny::imageOutput(
-        outputId = ns("s3"),
-        click = clickOpts(id = ns("hexClick"), clip = FALSE),
-        inline = TRUE
-      )
+      shiny::imageOutput(outputId = ns("s3"), inline = TRUE)
     ),
     shiny::absolutePanel(
       bottom = (relationships[id2, 6] + 10), left = (relationships[id2, 5] + 60),
-      shiny::imageOutput(
-        outputId = ns("s4"),
-        click = clickOpts(id = ns("hexClick"), clip = FALSE),
-        inline = TRUE
-      )
+      shiny::imageOutput(outputId = ns("s4"), inline = TRUE)
     ),
     shiny::absolutePanel(
       bottom = (relationships[id2, 6] + 30), left = (relationships[id2, 5] + 25),
-      shiny::imageOutput(
-        outputId = ns("s5"),
-        click = clickOpts(id = ns("hexClick"), clip = FALSE),
-        inline = TRUE
-      )
+      shiny::imageOutput(outputId = ns("s5"), inline = TRUE)
     ),
     shiny::absolutePanel(
       bottom = (relationships[id2, 6] + 70), left = (relationships[id2, 5] + 25),
-      shiny::imageOutput(
-        outputId = ns("s6"),
-        click = clickOpts(id = ns("hexClick"), clip = FALSE),
-        inline = TRUE
-      )
+      shiny::imageOutput(outputId = ns("s6"), inline = TRUE)
     ),
     shiny::absolutePanel(
       bottom = (relationships[id2, 6] + 50), left = (relationships[id2, 5] + 45),
-      shiny::imageOutput(
-        outputId = ns("c1"),
-        click = clickOpts(id = ns("hexClick"), clip = FALSE),
-        inline = TRUE
-      )
+      shiny::imageOutput(outputId = ns("c1"), inline = TRUE)
     ),
     shiny::absolutePanel(
       bottom = (relationships[id2, 6] + 50), left = (relationships[id2, 5] + 70),
-      shiny::imageOutput(
-        outputId = ns("c2"),
-        click = clickOpts(id = ns("hexClick"), clip = FALSE),
-        inline = TRUE
-      )
+      shiny::imageOutput(outputId = ns("c2"), inline = TRUE)
     )
   )
 }
@@ -84,188 +50,130 @@ hexUI <- function(id, id2){
 hex <- function(input, 
                 output, 
                 session, 
-                hexID, 
                 reset = shiny::reactiveValues(x = NULL),
-                block = shiny::reactiveValues(x = NULL)){
+                block = shiny::reactiveValues(x = NULL),
+                faceIMG, s1, s2, s3, s4, s5, s6, c1, c2, id2){
   clickStatus <- shiny::reactiveValues(show = FALSE,
-                                       hex = hexID,
                                        ts = base::Sys.time(),
                                        found = FALSE)
   shiny::observeEvent(input$hexClick,{
-    if(!clickStatus$found){
+    if(id2 > 19){
       clickStatus$show <- !clickStatus$show
-      clickStatus$ts <- base::Sys.time()
+      #clickStatus$ts <- base::Sys.time()
     }
-  })
-  
-  shiny::observeEvent(block$x, {
-    if(hexID %in% block$x) clickStatus$found <- TRUE
-  })
-  
-  shiny::observeEvent(reset$x, {
-    if(hexID %in% reset$x & !clickStatus$found) clickStatus$show <- FALSE
   })
   
   output$hex <- shiny::renderImage({
-    if(!clickStatus$show){
+    if(clickStatus$show){
       base::list(
-        src = "www/spaces/beige2.png",
+        src = "www/spaces/beige1.png",
         width = 139,
         height = 120,
         contentType = "image/png"
       )
     } else {
       base::list(
-        src = base::paste0("www/hex/", hexID),
+        src = faceIMG,
         width = 139,
         height = 120,
-        contentType = "image/png"
-      )
+        contentType = "image/png")
     }
-  }, deleteFile = FALSE)
+    }, deleteFile = FALSE)
   
   output$s1 <- shiny::renderImage({
-    if(!clickStatus$show){
+    if(s1 != 0){
       base::list(
-        src = base::paste0("www/nums/nums_02.png"),
-        width = 0,
-        height = 0,
-        contentType = "image/png"
-      )
-    } else {
-      base::list(
-        src = base::paste0("www/nums/nums_01.png"),
+        src = base::paste0("www/nums/nums_0", s1, ".png"),
         width = 20,
         height = 20,
         contentType = "image/png"
-      )
+    )} else {
+      base::list(src = "ww", width = 0, height = 0, contentType = "image/png")
     }
   }, deleteFile = FALSE)
   
   output$s2 <- shiny::renderImage({
-    if(!clickStatus$show){
+    if(s2 != 0){
       base::list(
-        src = base::paste0("www/nums/nums_02.png"),
-        width = 0,
-        height = 0,
-        contentType = "image/png"
-      )
-    } else {
-      base::list(
-        src = base::paste0("www/nums/nums_02.png"),
+        src = base::paste0("www/nums/nums_0", s2, ".png"),
         width = 20,
         height = 20,
         contentType = "image/png"
-      )
-    }
+      )} else {
+        base::list(src = "ww", width = 0, height = 0, contentType = "image/png")
+      }
   }, deleteFile = FALSE)
   
   output$s3 <- shiny::renderImage({
-    if(!clickStatus$show){
+    if(s3 != 0){
       base::list(
-        src = base::paste0("www/nums/nums_03.png"),
-        width = 0,
-        height = 0,
-        contentType = "image/png"
-      )
-    } else {
-      base::list(
-        src = base::paste0("www/nums/nums_03.png"),
+        src = base::paste0("www/nums/nums_0", s3, ".png"),
         width = 20,
         height = 20,
         contentType = "image/png"
-      )
-    }
+      )} else {
+        base::list(src = "ww", width = 0, height = 0, contentType = "image/png")
+      }
   }, deleteFile = FALSE)
   
   output$s4 <- shiny::renderImage({
-    if(!clickStatus$show){
+    if(s4 != 0){
       base::list(
-        src = base::paste0("www/nums/nums_02.png"),
-        width = 0,
-        height = 0,
-        contentType = "image/png"
-      )
-    } else {
-      base::list(
-        src = base::paste0("www/nums/nums_04.png"),
+        src = base::paste0("www/nums/nums_0", s4, ".png"),
         width = 20,
         height = 20,
         contentType = "image/png"
-      )
-    }
+      )} else {
+        base::list(src = "ww", width = 0, height = 0, contentType = "image/png")
+      }
   }, deleteFile = FALSE)
   
   output$s5 <- shiny::renderImage({
-    if(!clickStatus$show){
+    if(s5 != 0){
       base::list(
-        src = base::paste0("www/nums/nums_02.png"),
-        width = 0,
-        height = 0,
-        contentType = "image/png"
-      )
-    } else {
-      base::list(
-        src = base::paste0("www/nums/nums_05.png"),
+        src = base::paste0("www/nums/nums_0", s5, ".png"),
         width = 20,
         height = 20,
         contentType = "image/png"
-      )
-    }
+      )} else {
+        base::list(src = "ww", width = 0, height = 0, contentType = "image/png")
+      }
   }, deleteFile = FALSE)
   
   output$s6 <- shiny::renderImage({
-    if(!clickStatus$show){
+    if(s6 != 0){
       base::list(
-        src = base::paste0("www/nums/nums_02.png"),
-        width = 0,
-        height = 0,
-        contentType = "image/png"
-      )
-    } else {
-      base::list(
-        src = base::paste0("www/nums/nums_06.png"),
+        src = base::paste0("www/nums/nums_0", s6, ".png"),
         width = 20,
         height = 20,
         contentType = "image/png"
-      )
-    }
+      )} else {
+        base::list(src = "ww", width = 0, height = 0, contentType = "image/png")
+      }
   }, deleteFile = FALSE)
   
   output$c1 <- shiny::renderImage({
-    if(!clickStatus$show){
-      base::list(
-        src = base::paste0("www/nums/nums_02.png"),
-        width = 0,
-        height = 0,
-        contentType = "image/png"
-      )
-    } else {
+    if(c1 != 0){
       base::list(
         src = base::paste0("www/chits/chits_01.png"),
         width = 20,
         height = 20,
         contentType = "image/png"
-      )
-    }
+      )} else {
+        base::list(src = "ww", width = 0, height = 0, contentType = "image/png")
+      }
   }, deleteFile = FALSE)
   
   output$c2 <- shiny::renderImage({
-    if(!clickStatus$show){
-      base::list(
-        src = base::paste0("www/nums/nums_02.png"),
-        width = 0,
-        height = 0,
-        contentType = "image/png"
-      )
-    } else {
+    if(c2 != 0){
       base::list(
         src = base::paste0("www/chits/chits_02.png"),
         width = 20,
         height = 20,
         contentType = "image/png"
-      )
-    }
+      )} else {
+        base::list(src = "ww", width = 0, height = 0, contentType = "image/png")
+      }
   }, deleteFile = FALSE)
   
   return(clickStatus)

@@ -14,6 +14,7 @@
 
 source("modules/hexModule.R")
 source("modules/timeModule.R")
+source("modules/scoreModule.R")
 source("modules/welcomeModule.R")
 
 # Functions
@@ -22,8 +23,8 @@ source("functions/utils.R")
 
 # Global Variables
 
-n_hex <- 10
-
+cardsPerPlayer <- 6
+playerCount <- 2
 boardSize <- 21 # number of places a card can be placed
 cardEdgeCount <- 6 # number of edges a card has
 leftOffset <- 200

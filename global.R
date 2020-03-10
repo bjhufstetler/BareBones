@@ -30,8 +30,8 @@ cardEdgeCount <- 6 # number of edges a card has
 leftOffset <- 200
 bottomOffset <- 10
 
-relationships <- base::as.matrix(
-  base::data.frame(
+relationships <- as.matrix(
+  data.frame(
     placecard = rep(1:boardSize, 
                     each = cardEdgeCount),
     placeedge = rep(1:cardEdgeCount, 
@@ -74,7 +74,7 @@ relationships <- base::as.matrix(
 
 
 # distribution stores the lower and upper edge number bounds and the level distros
-distribution <- base::data.frame(
+distribution <- data.frame(
   level = 1:10,
   pdf = c(.13,.12,.12,.12,.11,.10,.09,.08,.07,.06),
   lb1 = c(1,1,1,1,1,1,1,1,1,5),
@@ -84,7 +84,7 @@ distribution <- base::data.frame(
   lb3 = c(4,4,5,5,6,6,7,7,8,8),
   ub3 = c(5,6,6,7,7,8,8,9,9,9)
   )
-distribution <- base::as.matrix(
+distribution <- as.matrix(
   dplyr::mutate(distribution, cdf = cumsum(pdf))
 )
 

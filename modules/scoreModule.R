@@ -1,8 +1,8 @@
 # Score Module
-# Uses: {base, shiny}
+# Uses: {shiny}
 
 scoreUI <- function(id){
-  ns <- shiny::NS(id)
+  ns <- NS(id)
   
   tags$div(
     style = "width:100%; text-align: center;",
@@ -10,7 +10,6 @@ scoreUI <- function(id){
     tags$br(),
     "Player : Computer",
     tags$br(),
-    shiny::verbatimTextOutput(outputId = "score_ui")
+    verbatimTextOutput(outputId = "score_ui")
   )
-  
 }

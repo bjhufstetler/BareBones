@@ -2,17 +2,17 @@
 # Uses: {base}
 
 filterFound <- function(l){
-  found <- base::unlist(base::lapply(l, `[[`, "found"), use.names = FALSE)
+  found <- unlist(lapply(l, `[[`, "found"), use.names = FALSE)
   l[!found]
 }
 
 allFound <- function(l){
-  found <- base::unlist(base::lapply(l, `[[`, "found"), use.names = FALSE)
-  base::all(found)
+  found <- unlist(lapply(l, `[[`, "found"), use.names = FALSE)
+  all(found)
 }
 
 asNull <- function(x){
-  if(base::is.na(x)){
+  if(is.na(x)){
     NULL
   } else {
     x    
@@ -20,21 +20,21 @@ asNull <- function(x){
 }
 
 whichHex <- function(l, module){
-  res <- base::lapply(module, function(x) l[[x]]$hex)
-  base::unlist(res, use.names = FALSE)
+  res <- lapply(module, function(x) l[[x]]$hex)
+  unlist(res, use.names = FALSE)
 }
 
 whichShow <- function(l, indice = NULL){
   l <- filterFound(l)
-  if(base::length(l) == 0) return(NULL)
+  if(length(l) == 0) return(NULL)
   
-  res <- base::unlist(base::lapply(l, `[[`, "show"))
-  if(base::all(!res)) return(NULL)
+  res <- unlist(lapply(l, `[[`, "show"))
+  if(all(!res)) return(NULL)
   
-  ts <- base::unlist(base::lapply(l[res], `[[`, "ts"), use.names = FALSE)
-  res <- base::names(l)[res]
-  res <- res[base::order(ts, decreasing = FALSE)]
-  if(base::is.null(indice)){
+  ts <- unlist(lapply(l[res], `[[`, "ts"), use.names = FALSE)
+  res <- names(l)[res]
+  res <- res[order(ts, decreasing = FALSE)]
+  if(is.null(indice)){
     res
   } else {
     asNull(res[indice])
@@ -44,7 +44,7 @@ whichShow <- function(l, indice = NULL){
 
 dealCards <- function(){
   # Deal cards to each player
-  tempEdges <- base::matrix(NA, ncol = 6)
+  tempEdges <- matrix(NA, ncol = 6)
   for (playerCard in 1:(playerCount*cardsPerPlayer)){
     # Create cardsPerPlayer*playerCount random cards
     # Determine the card level
@@ -66,7 +66,7 @@ dealCards <- function(){
                           as.integer(cardBounds[names(cardBounds) == "ub3"]), 
                         replace = TRUE, size = 2)
     edgeNums <- sample(c(edgeNums1, edgeNums2, edgeNums3))
-    tempEdges <- base::rbind(tempEdges, edgeNums)
+    tempEdges <- rbind(tempEdges, edgeNums)
   }
   tempEdges <- tempEdges[-1,]
   return(tempEdges)

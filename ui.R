@@ -4,7 +4,7 @@
 
 # Uses: {base, shiny}
 
-shiny::fluidPage(
+fluidPage(
   
   tags$head(
     tags$link(href = "styles.css", rel = "stylesheet", type = "text/css"),
@@ -32,10 +32,10 @@ shiny::fluidPage(
   
   tags$div(
     style = "width: 650px; margin: auto;",
-    base::lapply(
-      X = base::seq_len(21),
+    lapply(
+      X = seq_len(21),
       FUN = function(x) {
-        hexUI(id = base::paste0("module", x), id2 = x)
+        hexUI(id = paste0("module", x), id2 = x)
       }
     )
   ),

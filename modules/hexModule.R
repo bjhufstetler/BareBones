@@ -67,19 +67,36 @@ hexUI <- function(id, id2){
 hex <- function(input, 
                 output, 
                 session,
-                id2, bc){
-  clickStatus <- shiny::reactiveValues(show = FALSE)
-  
+                id2, boardCards
+                ){
+  #clickStatus <- shiny::reactiveValues(show = FALSE)
   # Click Status
   shiny::observeEvent(input$hexClick, {
-    if(id2 > 19 & sum(isolate(bc$se[20:21])) < 2){
-      clickStatus$show <- !clickStatus$show
+    # select card from hand
+    if(id2 > 19){
+    boardCards$se[20:21] <- FALSE
+    boardCards$se[id2] = TRUE
+    }
+    # place selected card on board
+    if(id2 < 20 & sum(boardCards$se[20:21]) == 1){
+      if(boardCards$se[20] == 1){ 
+        se <- 20
+      } else {
+        se <- 21
+      }
+      boardCards$e1[id2] <- boardCards$e1[se]
+      boardCards$e2[id2] <- boardCards$e2[se]
+      boardCards$e3[id2] <- boardCards$e3[se]
+      boardCards$e4[id2] <- boardCards$e4[se]
+      boardCards$e5[id2] <- boardCards$e5[se]
+      boardCards$e6[id2] <- boardCards$e6[se]
+      boardCards$c1[id2] <- 1
+      boardCards$se[se] <- 0
     }
   })
-  
   # Outline of Selected Card
   output$hexSelected <- shiny::renderImage({
-    if(clickStatus$show){
+    if(boardCards$se[id2]){
       base::list(
         src = "www/spaces/red.png",
         width = 144,
@@ -97,31 +114,31 @@ hex <- function(input,
   
   # Card Face
   output$hex <- shiny::renderImage({
-      base::list(
-        src = isolate(bc$im[id2]),
-        width = 139,
-        height = 120,
-        contentType = "image/png")
-    }, deleteFile = FALSE)
+    base::list(
+      src = boardCards$im[id2],
+      width = 139,
+      height = 120,
+      contentType = "image/png")
+  }, deleteFile = FALSE)
   
   # Top number
   output$e1 <- shiny::renderImage({
-    if(isolate(bc$e1[id2]) != 0){
+    if(boardCards$e1[id2] != 0){
       base::list(
-        src = base::paste0("www/nums/nums_0", isolate(bc$e1[id2]), ".png"),
+        src = base::paste0("www/nums/nums_0", boardCards$e1[id2], ".png"),
         width = 20,
         height = 20,
         contentType = "image/png"
-    )} else {
-      base::list(src = "ww", width = 0, height = 0, contentType = "image/png")
-    }
+      )} else {
+        base::list(src = "ww", width = 0, height = 0, contentType = "image/png")
+      }
   }, deleteFile = FALSE)
   
   # Top Right Number
   output$e2 <- shiny::renderImage({
-    if(isolate(bc$e2[id2]) != 0){
+    if(boardCards$e2[id2] != 0){
       base::list(
-        src = base::paste0("www/nums/nums_0", isolate(bc$e2[id2]), ".png"),
+        src = base::paste0("www/nums/nums_0", boardCards$e2[id2], ".png"),
         width = 20,
         height = 20,
         contentType = "image/png"
@@ -132,9 +149,9 @@ hex <- function(input,
   
   # Bottom Right Number
   output$e3 <- shiny::renderImage({
-    if(isolate(bc$e3[id2]) != 0){
+    if(boardCards$e3[id2] != 0){
       base::list(
-        src = base::paste0("www/nums/nums_0", isolate(bc$e3[id2]), ".png"),
+        src = base::paste0("www/nums/nums_0", boardCards$e3[id2], ".png"),
         width = 20,
         height = 20,
         contentType = "image/png"
@@ -145,9 +162,9 @@ hex <- function(input,
   
   # Bottom Number
   output$e4 <- shiny::renderImage({
-    if(isolate(bc$e4[id2]) != 0){
+    if(boardCards$e4[id2] != 0){
       base::list(
-        src = base::paste0("www/nums/nums_0", isolate(bc$e4[id2]), ".png"),
+        src = base::paste0("www/nums/nums_0", boardCards$e4[id2], ".png"),
         width = 20,
         height = 20,
         contentType = "image/png"
@@ -158,9 +175,9 @@ hex <- function(input,
   
   # Bottom Left Number
   output$e5 <- shiny::renderImage({
-    if(isolate(bc$e5[id2]) != 0){
+    if(boardCards$e5[id2] != 0){
       base::list(
-        src = base::paste0("www/nums/nums_0", isolate(bc$e5[id2]), ".png"),
+        src = base::paste0("www/nums/nums_0", boardCards$e5[id2], ".png"),
         width = 20,
         height = 20,
         contentType = "image/png"
@@ -171,9 +188,9 @@ hex <- function(input,
   
   # Top Left Number
   output$e6 <- shiny::renderImage({
-    if(isolate(bc$e6[id2]) != 0){
+    if(boardCards$e6[id2] != 0){
       base::list(
-        src = base::paste0("www/nums/nums_0", isolate(bc$e6[id2]), ".png"),
+        src = base::paste0("www/nums/nums_0", boardCards$e6[id2], ".png"),
         width = 20,
         height = 20,
         contentType = "image/png"
@@ -184,7 +201,7 @@ hex <- function(input,
   
   # Left Chit
   output$c1 <- shiny::renderImage({
-    if(isolate(bc$c1[id2]) != 0){
+    if(boardCards$c1[id2] != 0){
       base::list(
         src = base::paste0("www/chits/chits_01.png"),
         width = 20,
@@ -197,7 +214,7 @@ hex <- function(input,
   
   # Right Chit
   output$c2 <- shiny::renderImage({
-    if(isolate(bc$c2[id2]) != 0){
+    if(boardCards$c2[id2] != 0){
       base::list(
         src = base::paste0("www/chits/chits_02.png"),
         width = 20,
@@ -208,5 +225,5 @@ hex <- function(input,
       }
   }, deleteFile = FALSE)
   
-  return(clickStatus)
+  return(boardCards)
 }

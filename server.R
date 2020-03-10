@@ -42,7 +42,7 @@ function(input, output, session){
                                       )
   
   # Create a reactive object to hold the player's scores and captured chits
-  scores <- shiny::reactiveValues(s1 = 0,
+  scores <- shiny::reactiveValues(s1 = 2,
                                   s2 = 0,
                                   c1 = 0,
                                   c2 = 0)
@@ -53,11 +53,9 @@ function(input, output, session){
     results_mods[[base::paste0("module", x)]] <- shiny::callModule(
       module = hex,
       id = base::paste0("module", x),
-      id2 = x,
-      bc = boardCards
+      id2 = x, boardCards = boardCards
     )
     #boardCards$se[x] <- isolate(results_mods$)
-    print(isolate(unlist(lapply(results_mods, `[[`, base::paste0("module",x)), use.names = FALSE)))
   }
   
   base::lapply(
@@ -68,7 +66,6 @@ function(input, output, session){
   output$score_ui <- shiny::renderText(
     paste(scores$s1, scores$s2, sep = " : ")
   )
-  
   
   shiny::observeEvent(input$reload, {
     session$reload()
@@ -98,7 +95,9 @@ function(input, output, session){
     }
   })
   
-  #output$results = renderPrint({input$keystroke}) 
+  
+  
   
 }
+  
 

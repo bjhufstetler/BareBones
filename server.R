@@ -25,34 +25,33 @@ function(input, output, session){
                                 faceIMG = paste0("www/hex/", hex_png[1:playerCount*cardsPerPlayer]))
   
   # Create a reactive object to hold the information displayed on the cards
-  boardCards <- reactiveValues(e1 = c(rep(0, boardSize-2), tempEdges[1:2,1]),
-                               e2 = c(rep(0, boardSize-2), tempEdges[1:2,2]),
-                               e3 = c(rep(0, boardSize-2), tempEdges[1:2,3]),
-                               e4 = c(rep(0, boardSize-2), tempEdges[1:2,4]),
-                               e5 = c(rep(0, boardSize-2), tempEdges[1:2,5]),
-                               e6 = c(rep(0, boardSize-2), tempEdges[1:2,6]),
-                               c1 = rep(0, boardSize),
-                               c2 = rep(0, boardSize),
-                               oc = c(rep(FALSE, boardSize - 2), 1, 1),
-                               av = c(TRUE, rep(FALSE, boardSize-1)),
+  boardCards <- reactiveValues(e1 = c(rep(0, boardSize-2), tempEdges[1:4,1]), # Top edge
+                               e2 = c(rep(0, boardSize-2), tempEdges[1:4,2]), # Top right edge
+                               e3 = c(rep(0, boardSize-2), tempEdges[1:4,3]), # Bottom right edge
+                               e4 = c(rep(0, boardSize-2), tempEdges[1:4,4]), # Bottom edge
+                               e5 = c(rep(0, boardSize-2), tempEdges[1:4,5]), # Bottom left edge
+                               e6 = c(rep(0, boardSize-2), tempEdges[1:4,6]), # Top left edge
+                               c1 = rep(0, boardSize), # P1 chits on the board
+                               c2 = rep(0, boardSize), # P2 chits on the board
+                               oc = c(rep(FALSE, boardSize - 2), 1, 1), # Board position occupied
+                               av = c(TRUE, rep(FALSE, boardSize - 1)), # Board position available
                                im = c("www/spaces/red.png",
                                       rep("www/spaces/beige2.png", 18),
-                                      paste0("www/hex/", hex_png[1:2])),
-                               se = c(rep(FALSE, boardSize))
-                               )
+                                      paste0("www/hex/", hex_png[1:4])), # Card image
+                               se = c(rep(FALSE, boardSize)), # Hand card selected
+                               sc = c(2, 3), # Scores
+                               ch = c(0, 0), # Captured chits
+                               p1 = c(1, 2), # Player cards taken by player 1
+                               p2 = c(3, 4)) # Playre cards taken by player 2
   
-  # Create a reactive object to hold the player's scores and captured chits
-  scores <- reactiveValues(s1 = 2,
-                           s2 = 0,
-                           c1 = 0,
-                           c2 = 0)
+  
   
   
   ####################################
   #--- Refresh Card Visualization ---#
   ####################################
   
-  results_mods <- reactiveValues()
+  results_mods <- reactiveValues() # I don't know why I need this
   refreshCard <- function(x){
     results_mods[[paste0("module", x)]] <- callModule(
       module = hex,
@@ -71,7 +70,7 @@ function(input, output, session){
   ####################################
   
   output$score_ui <- renderText(
-    paste(scores$s1, scores$s2, sep = " : ")
+    paste(boardCards$sc[1], boardCards$sc[2], sep = " : ")
   )
   
   ####################################

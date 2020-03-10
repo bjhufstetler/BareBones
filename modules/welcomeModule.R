@@ -2,8 +2,8 @@
 # Uses: {base, shiny}
 
 welcomeUI <- function(id){
-  ns <- shiny::NS(id)
-  shiny::modalDialog(
+  ns <- NS(id)
+  modalDialog(
     title = tags$h1(
       style = "text-align: center;",
       "Welcome to BareBones!"
@@ -13,22 +13,22 @@ welcomeUI <- function(id){
       tags$p("Challenge the AI by"),
       tags$p("clicking the button below")
     ),
-    footer = shiny::actionButton(
+    footer = actionButton(
       inputId = ns("play"),
       label = "Play !",
-      icon = shiny::icon("play"),
+      icon = icon("play"),
       style = "width: 100%"
     )
   )
 }
 
 welcome <- function(input, output, session){
-  id <- base::gsub("-$", "", session$ns(""))
-  shiny::showModal(ui = welcomeUI(id))
+  id <- gsub("-$", "", session$ns(""))
+  showModal(ui = welcomeUI(id))
   
-  shiny::observeEvent(input$play, {
-    shiny::removeModal()
+  observeEvent(input$play, {
+    removeModal()
   })
   
-  return(shiny::reactive(input$play))
+  return(reactive(input$play))
 }

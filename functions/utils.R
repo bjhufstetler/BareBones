@@ -45,7 +45,7 @@ whichShow <- function(l, indice = NULL){
 dealCards <- function(){
   # Deal cards to each player
   tempEdges <- matrix(NA, ncol = 6)
-  for (playerCard in 1:(playerCount*cardsPerPlayer)){
+  for (playerCard in seq_len(25)){
     # Create cardsPerPlayer*playerCount random cards
     # Determine the card level
     cardLevelRandomVariable <- runif(1)

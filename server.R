@@ -10,21 +10,23 @@ function(input, output, session){
   timer <- callModule(module = time, id = "timer", start = start)
   
   # Get enough card images to cover the board
-  hex_png <- sample(list.files(path = "www/hex/", pattern = "png$"), boardSize)
+  hex_png <- sample(list.files(path = "www/hex/", pattern = "png$"), boardSize + 5)
   
   # Deal cards for each player
   tempEdges <- dealCards()
   
   # Set the player's cards as a reactive object
-  playerCards <- reactiveValues(edge1 = tempEdges[,1],
-                                edge2 = tempEdges[,2],
-                                edge3 = tempEdges[,3],
-                                edge4 = tempEdges[,4],
-                                edge5 = tempEdges[,5],
-                                edge6 = tempEdges[,6],
-                                faceIMG = paste0("www/hex/", hex_png[1:playerCount*cardsPerPlayer]))
+  playerCards <- reactiveValues(e1 = tempEdges[,1],
+                                e2 = tempEdges[,2],
+                                e3 = tempEdges[,3],
+                                e4 = tempEdges[,4],
+                                e5 = tempEdges[,5],
+                                e6 = tempEdges[,6],
+                                im = paste0("www/hex/", hex_png))
   
-  # Create a reactive object to hold the information displayed on the cards
+  # Create a reactive object to hold the information on the board
+  # [20:21] ==> Player 1's cards
+  # [22:23] ==> Player 2's cards
   boardCards <- reactiveValues(e1 = c(rep(0, boardSize-2), tempEdges[1:4,1]), # Top edge
                                e2 = c(rep(0, boardSize-2), tempEdges[1:4,2]), # Top right edge
                                e3 = c(rep(0, boardSize-2), tempEdges[1:4,3]), # Bottom right edge
@@ -56,7 +58,9 @@ function(input, output, session){
     results_mods[[paste0("module", x)]] <- callModule(
       module = hex,
       id = paste0("module", x),
-      id2 = x, boardCards = boardCards
+      id2 = x, 
+      boardCards = boardCards, 
+      playerCards = playerCards
     )
   }
   

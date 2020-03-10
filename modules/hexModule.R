@@ -90,6 +90,7 @@ hex <- function(input,
       boardCards$e4[id2] <- boardCards$e4[se]
       boardCards$e5[id2] <- boardCards$e5[se]
       boardCards$e6[id2] <- boardCards$e6[se]
+      boardCards$im[id2] <- boardCards$im[se]
       boardCards$c1[id2] <- 1
       boardCards$se[se] <- 0
     }

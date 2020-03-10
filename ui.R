@@ -14,7 +14,7 @@ shiny::fluidPage(
   tags$div(
     class = "title-app",
     tags$h1("Bare Bones Trading Card Game"),
-    tags$h4("Get the most points")
+    tags$h4("Rotate cards with left and right arrow buttons")
   ),
   tags$br(),
   

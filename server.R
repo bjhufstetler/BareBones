@@ -76,17 +76,21 @@ function(input, output, session){
       boardCards = boardCards, 
       playerCards = playerCards
     )
-    for(i in 1:isolate(boardCards$ch[1])){
-    results_mods[[paste0("cplayer",i)]] <- callModule(
-      module = chit_player,
-      id = paste0("cplayer", i)
-    )
-    }
-    for(i in 1:isolate(boardCards$ch[2])){
-      results_mods[[paste0("cai",i)]] <- callModule(
-        module = chit_ai,
-        id = paste0("cai", i)
+    if(isolate(boardCards$ch[1] > 0)){
+      for(i in 1:isolate(boardCards$ch[1])){
+      results_mods[[paste0("cplayer",i)]] <- callModule(
+        module = chit_player,
+        id = paste0("cplayer", i)
       )
+      }
+    }
+    if(isolate(boardCards$ch[2] > 0)){
+      for(i in 1:isolate(boardCards$ch[2])){
+        results_mods[[paste0("cai",i)]] <- callModule(
+          module = chit_ai,
+          id = paste0("cai", i)
+        )
+      }
     }
     print(c(isolate(boardCards$ch[1]), isolate(boardCards$ch[2])))
   }

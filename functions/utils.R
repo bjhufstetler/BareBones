@@ -15,7 +15,7 @@ asNull <- function(x){
   if(is.na(x)){
     NULL
   } else {
-    x    
+    x
   }
 }
 
@@ -27,10 +27,10 @@ whichHex <- function(l, module){
 whichShow <- function(l, indice = NULL){
   l <- filterFound(l)
   if(length(l) == 0) return(NULL)
-  
+
   res <- unlist(lapply(l, `[[`, "show"))
   if(all(!res)) return(NULL)
-  
+
   ts <- unlist(lapply(l[res], `[[`, "ts"), use.names = FALSE)
   res <- names(l)[res]
   res <- res[order(ts, decreasing = FALSE)]

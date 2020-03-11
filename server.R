@@ -4,6 +4,14 @@
 
 # Uses: {base, shiny, glue}
 
+# TODO: 
+# 1) display captured chits, 
+# 2) display rules, 
+# 3) display arrows for each placed chit, 
+# 4) pause while placing chits
+# 4) let AI go first
+# 5) display final message after game is over
+
 function(input, output, session){
   
   start <- callModule(module = welcome, id = "welcome")
@@ -46,7 +54,9 @@ function(input, output, session){
                                p1 = c(1, 2), # Player cards taken by player 1
                                p2 = c(3, 4), # Player cards taken by player 2
                                tu = 1, # Turn determination
-                               te = 0) # Test score
+                               te = 0, # Test score
+                               la = 1, # AIs location choice
+                               ar = NA) # Arrow locations
   
   # Determine player 1
   if(runif(1) > 0.5) boardCards$tu <- 2
@@ -114,6 +124,11 @@ function(input, output, session){
       }
     }
   })
-}
   
+  observeEvent(boardCards$la,{
+    print(boardCards$im[boardCards$la])
+    refreshCard(boardCards$la)
+  })
+}
+
 

@@ -180,22 +180,23 @@ hex <- function(input,
     }
 
     # Place Card
-    PlaceCard <- function(player, round, cardEdgeValues, location, evaluationType = c("test", "real")){
+    PlaceCard <- function(player, round, cardEdgeValues, im, location, evaluationType = c("test", "real")){
       # for card being placed: update board.cards edge values, chit, occupied, and available
+      print(im)
       if(evaluationType == "real"){
         # set edge values, image, occupied = 1, available = 0
-        boardCards$e1[id2] <- boardCards$e1[se]
-        boardCards$e2[id2] <- boardCards$e2[se]
-        boardCards$e3[id2] <- boardCards$e3[se]
-        boardCards$e4[id2] <- boardCards$e4[se]
-        boardCards$e5[id2] <- boardCards$e5[se]
-        boardCards$e6[id2] <- boardCards$e6[se]
-        boardCards$im[id2] <- boardCards$im[se]
-        boardCards$av[id2] <- 0 # Make placement area unavailable
-        boardCards$oc[id2] <- 1 # Mark placement area as occupied
+        boardCards$e1[location] <- boardCards$e1[se]
+        boardCards$e2[location] <- boardCards$e2[se]
+        boardCards$e3[location] <- boardCards$e3[se]
+        boardCards$e4[location] <- boardCards$e4[se]
+        boardCards$e5[location] <- boardCards$e5[se]
+        boardCards$e6[location] <- boardCards$e6[se]
+        boardCards$im[location] <- im
+        boardCards$av[location] <- 0 # Make placement area unavailable
+        boardCards$oc[location] <- 1 # Mark placement area as occupied
         
         # New neighbors
-        neighbors <- relationships[relationships[,1] == id2,3]
+        neighbors <- relationships[relationships[,1] == location,3]
         for(edge in neighbors){
           if(edge < 20 & boardCards$oc[edge] == 0){
             boardCards$av[edge] <- 1 #Make all neighbors available
@@ -236,39 +237,40 @@ hex <- function(input,
     }
     
     # Evaluate options
-    # EvaluateOptions <- function(player, round, hand, intelligence){
-    #   index = 0
-    #   bestScore <- 0
-    #   bestSoln <- list()
-    #   for(card in 1:dim(hand)[1]){ # check each card
-    #     if(!is.na(hand[card,1])){
-    #       index = index + 1
-    #       for(location in seq_len(boardSize)[boardCards$av == 1]){ # check each viable location
-    #         for(rotation in 1:6){ # check each orientation
-    #           cardRotated <- rep(hand[card,], 2)[rotation:(rotation+5)]
-    #           tempScore <- PlaceCard(player,
-    #                                  round = round,
-    #                                  cardRotated,
-    #                                  location,
-    #                                  "test")$te
-    #           if((tempScore > bestScore & runif(1) < intelligence) | bestScore == 0){
-    #             bestScore = tempScore
-    #             bestSoln <- list(index = index,
-    #                              rotation = rotation,
-    #                              location = location)
-    #           } else if(tempScore == bestScore){
-    #             if(runif(1) > 0.9){
-    #               bestSoln <- list(index = index,
-    #                                rotation = rotation,
-    #                                location = location)
-    #             }
-    #           }
-    #         }
-    #       }
-    #     }
-    #   }
-    #   return(bestSoln)
-    # }
+    EvaluateOptions <- function(player, round, hand, intelligence){
+      index = 0
+      bestScore <- 0
+      bestSoln <- list()
+      for(card in 1:dim(hand)[1]){ # check each card
+        if(!is.na(hand[card,1])){
+          index = index + 1
+          for(location in seq_len(boardSize)[boardCards$av == 1]){ # check each viable location
+            for(rotation in 1:6){ # check each orientation
+              cardRotated <- rep(hand[card,], 2)[rotation:(rotation+5)]
+              tempScore <- PlaceCard(player,
+                                     round = round,
+                                     cardRotated,
+                                     im = "null",
+                                     location,
+                                     "test")$te
+              if((tempScore > bestScore & runif(1) < intelligence) | bestScore == 0){
+                bestScore = tempScore
+                bestSoln <- list(index = index,
+                                 rotation = rotation,
+                                 location = location)
+              } else if(tempScore == bestScore){
+                if(runif(1) > 0.9){
+                  bestSoln <- list(index = index,
+                                   rotation = rotation,
+                                   location = location)
+                }
+              }
+            }
+          }
+        }
+      }
+      return(bestSoln)
+    }
     
     # SELECT CARD IN HAND
     if(id2 > 19){
@@ -283,37 +285,80 @@ hex <- function(input,
       } else {
         se <- 21
       }
-      boardCards <- PlaceCard(player = boardCards$tu,
-                              round = 3,
-                              cardEdgeValues = c(boardCards$e1[se],
-                                                 boardCards$e2[se],
-                                                 boardCards$e3[se],
-                                                 boardCards$e4[se],
-                                                 boardCards$e5[se],
-                                                 boardCards$e6[se]),
-                              location = id2,
-                              evaluationType = "real")
       if(boardCards$tu == 1){
+        boardCards <- PlaceCard(player = boardCards$tu,
+                                round = 3,
+                                cardEdgeValues = c(boardCards$e1[se],
+                                                   boardCards$e2[se],
+                                                   boardCards$e3[se],
+                                                   boardCards$e4[se],
+                                                   boardCards$e5[se],
+                                                   boardCards$e6[se]),
+                                im = boardCards$im[se],
+                                location = id2,
+                                evaluationType = "real")
+        # Deselect card from hand
+        boardCards$se[se] <- 0 
+        
+        # Update card in player's hand
+        boardCards$e1[se] <- playerCards$e1[-c(boardCards$p1, boardCards$p2)][1]
+        boardCards$e2[se] <- playerCards$e2[-c(boardCards$p1, boardCards$p2)][1]
+        boardCards$e3[se] <- playerCards$e3[-c(boardCards$p1, boardCards$p2)][1]
+        boardCards$e4[se] <- playerCards$e4[-c(boardCards$p1, boardCards$p2)][1]
+        boardCards$e5[se] <- playerCards$e5[-c(boardCards$p1, boardCards$p2)][1]
+        boardCards$e6[se] <- playerCards$e6[-c(boardCards$p1, boardCards$p2)][1]
+        boardCards$im[se] <- playerCards$im[-c(boardCards$p1, boardCards$p2)][1]
+        boardCards$p1 <- c(boardCards$p1, max(boardCards$p1, boardCards$p2) + 1)
+        
+        # Change player's turn
         boardCards$tu <- 2
-      } else {
-        boardCards$tu <- 1
       }
       
+      # AI's move
+      if(boardCards$tu == 2){
+        p2Hand <- matrix(c(boardCards$e1[22:23],
+                           boardCards$e2[22:23],
+                           boardCards$e3[22:23],
+                           boardCards$e4[22:23],
+                           boardCards$e5[22:23],
+                           boardCards$e6[22:23]),
+                         byrow = F, ncol = 6)
+        # AI chooses card, rotation, and location
+        choice <- EvaluateOptions(player = 2, 
+                                  round = 3, 
+                                  hand = p2Hand, 
+                                  intelligence = intelligence)
+        # AI chosen card rotated
+        rotatedCard <- rep(p2Hand[choice$index, ], 2)[choice$rotation:(choice$rotation + 5)]
+        
+        # Place AI chosen rotated card
+        boardCards <- PlaceCard(player = 2,
+                                round = 3,
+                                cardEdgeValues = rotatedCard,
+                                im = boardCards$im[21 + choice$index],
+                                location = choice$location,
+                                evaluationType = "real")
+        
+        # Update card in AI's hand
+        boardCards$e1[21 + choice$index] <- playerCards$e1[-c(boardCards$p1, boardCards$p2)][1]
+        boardCards$e2[21 + choice$index] <- playerCards$e2[-c(boardCards$p1, boardCards$p2)][1]
+        boardCards$e3[21 + choice$index] <- playerCards$e3[-c(boardCards$p1, boardCards$p2)][1]
+        boardCards$e4[21 + choice$index] <- playerCards$e4[-c(boardCards$p1, boardCards$p2)][1]
+        boardCards$e5[21 + choice$index] <- playerCards$e5[-c(boardCards$p1, boardCards$p2)][1]
+        boardCards$e6[21 + choice$index] <- playerCards$e6[-c(boardCards$p1, boardCards$p2)][1]
+        boardCards$im[21 + choice$index] <- playerCards$im[-c(boardCards$p1, boardCards$p2)][1]
+        boardCards$p2 <- c(boardCards$p2, max(boardCards$p1, boardCards$p2) + 1)
+        
+        # Change player's turn
+        boardCards$tu <- 1
+        
+        # Update AIs choice
+        boardCards$la <- choice$location
+      }
+      
+      # Update scores
       boardCards$sc[1] <- sum(boardCards$c1, boardCards$ch[1])
       boardCards$sc[2] <- sum(boardCards$c2, boardCards$ch[2])
-      
-      # Deselect card from hand
-      boardCards$se[se] <- 0 
-      # Update card in hand
-      boardCards$e1[se] <- playerCards$e1[-c(boardCards$p1, boardCards$p2)][1]
-      boardCards$e2[se] <- playerCards$e2[-c(boardCards$p1, boardCards$p2)][1]
-      boardCards$e3[se] <- playerCards$e3[-c(boardCards$p1, boardCards$p2)][1]
-      boardCards$e4[se] <- playerCards$e4[-c(boardCards$p1, boardCards$p2)][1]
-      boardCards$e5[se] <- playerCards$e5[-c(boardCards$p1, boardCards$p2)][1]
-      boardCards$e6[se] <- playerCards$e6[-c(boardCards$p1, boardCards$p2)][1]
-      boardCards$im[se] <- playerCards$im[-c(boardCards$p1, boardCards$p2)][1]
-      boardCards$p1 <- c(boardCards$p1, max(boardCards$p1, boardCards$p2) + 1)
-
     }
   })
   

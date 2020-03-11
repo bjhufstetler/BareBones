@@ -27,6 +27,8 @@ cardsPerPlayer <- 6
 playerCount <- 2
 boardSize <- 21 # number of places a card can be placed
 cardEdgeCount <- 6 # number of edges a card has
+peaceRounds <- 2
+intelligence <- 1
 leftOffset <- 200
 bottomOffset <- 10
 

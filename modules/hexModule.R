@@ -79,113 +79,196 @@ hex <- function(input,
   observeEvent(input$hexClick, {
     
     # CARD CLICK FUNCTIONS
-    # GetMatches <- function(cardEdgeValues, location){
-    #   edgePlacedCard <- 0
-    #   edgeNeighbors <- c(4,5,6,1,2,3)
-    #   edgeMatches <- vector()
-    #   for(neighbor in relationships[relationships[,colnames(relationships) == "placecard"] == location,
-    #                                 colnames(relationships) == "neighborcard"]){
-    #     edgePlacedCard <- edgePlacedCard + 1
-    #     edgeNeighborCard <- edgeNeighbors[edgePlacedCard]
-    #     if(neighbor > 0 && neighbor <= 19 && boardCards$oc[neighbor] == 1){
-    #       if(cardEdgeValues[edgePlacedCard] == as.integer(boardCards[neighbor, edgeNeighborCard])){
-    #         edgeMatches <- c(edgeMatches, neighbor)
+    # FIND MATCHED CARDS
+    GetMatches <- function(cardEdgeValues, location){ # pass the 6 edge values and the location
+      edgePlacedCard <- 0
+      edgeNeighbors <- c(4,5,6,1,2,3)
+      edgeMatches <- vector()
+      # neighbor is the location of each adjacent card starting at the top and going clockwise
+      for(neighbor in relationships[relationships[,colnames(relationships) == "placecard"] == location,
+                                    colnames(relationships) == "neighborcard"]){
+        edgePlacedCard <- edgePlacedCard + 1 # The edge being considered
+        edgeNeighborCard <- edgeNeighbors[edgePlacedCard] # The edge of the neighbor being considered
+        # Check if neighbor is on the board and occupied
+        if(neighbor > 0 && neighbor <= 19 && boardCards$oc[neighbor] == 1){
+          edgeNeighborValue <- switch(edgeNeighborCard,
+                                      boardCards$e1[neighbor],
+                                      boardCards$e2[neighbor],
+                                      boardCards$e3[neighbor],
+                                      boardCards$e4[neighbor],
+                                      boardCards$e5[neighbor],
+                                      boardCards$e6[neighbor])
+          if(cardEdgeValues[edgePlacedCard] == as.integer(edgeNeighborValue)){
+            edgeMatches <- c(edgeMatches, neighbor)
+          }
+        }
+      }
+      return(edgeMatches) # edgeMatches is the location of a matched card
+    }
+
+    # FIND OVERPOWERED CARDS
+    GetOverpowers <- function(cardEdgeValues, location){
+      edgePlacedCard <- 0
+      edgeNeighbors <- c(4,5,6,1,2,3)
+      edgeOverpowers <- vector()
+      for(neighbor in relationships[relationships[,colnames(relationships) == "placecard"] == location,
+                                    colnames(relationships) == "neighborcard"]){
+        edgePlacedCard <- edgePlacedCard + 1
+        edgeNeighborCard <- edgeNeighbors[edgePlacedCard]
+        if(neighbor > 0 && neighbor <= 19 && boardCards$oc[neighbor] == 1){
+          edgeNeighborValue <- switch(edgeNeighborCard,
+                                      boardCards$e1[neighbor],
+                                      boardCards$e2[neighbor],
+                                      boardCards$e3[neighbor],
+                                      boardCards$e4[neighbor],
+                                      boardCards$e5[neighbor],
+                                      boardCards$e6[neighbor])
+          if(cardEdgeValues[edgePlacedCard] > as.integer(edgeNeighborValue)){
+            edgeOverpowers <- c(edgeOverpowers, neighbor)
+          }
+        }
+      }
+      return(edgeOverpowers) # edgeOverpowers is the location of an overpowered card
+    }
+
+    # PLACE CHITS
+    AddChits <- function(player, addChits, evaluationType){
+      # addChits is a vector of locations to add a chit
+      # add chit to card placed
+      placedCardResults <- 1
+
+      if(evaluationType == "test"){
+        chitsTest <- matrix(c(unlist(boardCards$c1),
+                              unlist(boardCards$c2)),
+                            ncol = 2)
+        for(chitLocation in addChits){
+          # add chit to existing card, with 0 player chits
+          if(chitsTest[chitLocation, player] == 0){
+            chitsTest[chitLocation, player] <- 1
+            placedCardResults <- placedCardResults + 1
+          }else{
+            # add chit to existing card, with 1 player chit
+            placedCardResults <- placedCardResults + sum(chitsTest[chitLocation,-player])
+            chitsTest[chitLocation, -player] <- 0
+          }
+        }
+      } else if(evaluationType == "real"){
+        chits <- matrix(c(unlist(boardCards$c1),
+                          unlist(boardCards$c2)),
+                        ncol = 2)
+        capturedChits <- unlist(boardCards$ch)
+        for(chitLocation in addChits){
+          # add chit to existing card, with 0 player chits
+          if(chits[chitLocation, player] == 0){
+            chits[chitLocation, player] <- 1
+            placedCardResults <- placedCardResults + 1
+          }else{
+            # add chit to existing card, with 1 player chit
+            capturedChits[player] <- capturedChits[player] + sum(chits[chitLocation,-player])
+            chits[chitLocation, -player] <- 0
+            placedCardResults <- placedCardResults + sum(chits[chitLocation,-player])
+          }
+        }
+        boardCards$c1 <- chits[,1]
+        boardCards$c2 <- chits[,2]
+        boardCards$ch <- capturedChits
+      } else {
+        print("Unexpected evaluation type.")
+      }
+      boardCards$te <- placedCardResults # Used to evaluate options
+      return(boardCards)
+    }
+
+    # Place Card
+    PlaceCard <- function(player, round, cardEdgeValues, location, evaluationType = c("test", "real")){
+      # for card being placed: update board.cards edge values, chit, occupied, and available
+      if(evaluationType == "real"){
+        # set edge values, image, occupied = 1, available = 0
+        boardCards$e1[id2] <- boardCards$e1[se]
+        boardCards$e2[id2] <- boardCards$e2[se]
+        boardCards$e3[id2] <- boardCards$e3[se]
+        boardCards$e4[id2] <- boardCards$e4[se]
+        boardCards$e5[id2] <- boardCards$e5[se]
+        boardCards$e6[id2] <- boardCards$e6[se]
+        boardCards$im[id2] <- boardCards$im[se]
+        boardCards$av[id2] <- 0 # Make placement area unavailable
+        boardCards$oc[id2] <- 1 # Mark placement area as occupied
+        
+        # New neighbors
+        neighbors <- relationships[relationships[,1] == id2,3]
+        for(edge in neighbors){
+          if(edge < 20 & boardCards$oc[edge] == 0){
+            boardCards$av[edge] <- 1 #Make all neighbors available
+            boardCards$im[edge] <- "www/spaces/red.png"
+          }
+        }
+      }
+      addChits <- location
+
+      if (round > peaceRounds){
+        # get matches
+        matches <- GetMatches(cardEdgeValues, location)
+        # get matched overpowers
+        if(length(matches) >= 2){
+          for(match in matches){
+            matchEdgeValues <- c(boardCards$e1[match],
+                                 boardCards$e2[match],
+                                 boardCards$e3[match],
+                                 boardCards$e4[match],
+                                 boardCards$e5[match],
+                                 boardCards$e6[match])
+            matchOverpowers <- GetOverpowers(matchEdgeValues, match)
+            # add a chit to all matched cards, and cards overpowered by matched cards
+            addChits <- c(addChits, match, matchOverpowers)
+          }
+        }
+        overpoweredNeighbors <- GetOverpowers(cardEdgeValues, location)
+        if(length(overpoweredNeighbors) > 0){
+          addChits <- c(addChits, overpoweredNeighbors)
+        }
+      }
+      # add chits to all identified cards
+      print(addChits)
+      placedCardResults <- AddChits(player = player, 
+                                    addChits = addChits, 
+                                    evaluationType = evaluationType)
+      return(boardCards)
+    }
+    
+    # Evaluate options
+    # EvaluateOptions <- function(player, round, hand, intelligence){
+    #   index = 0
+    #   bestScore <- 0
+    #   bestSoln <- list()
+    #   for(card in 1:dim(hand)[1]){ # check each card
+    #     if(!is.na(hand[card,1])){
+    #       index = index + 1
+    #       for(location in seq_len(boardSize)[boardCards$av == 1]){ # check each viable location
+    #         for(rotation in 1:6){ # check each orientation
+    #           cardRotated <- rep(hand[card,], 2)[rotation:(rotation+5)]
+    #           tempScore <- PlaceCard(player,
+    #                                  round = round,
+    #                                  cardRotated,
+    #                                  location,
+    #                                  "test")$te
+    #           if((tempScore > bestScore & runif(1) < intelligence) | bestScore == 0){
+    #             bestScore = tempScore
+    #             bestSoln <- list(index = index,
+    #                              rotation = rotation,
+    #                              location = location)
+    #           } else if(tempScore == bestScore){
+    #             if(runif(1) > 0.9){
+    #               bestSoln <- list(index = index,
+    #                                rotation = rotation,
+    #                                location = location)
+    #             }
+    #           }
+    #         }
     #       }
     #     }
     #   }
-    #   return(edgeMatches)
+    #   return(bestSoln)
     # }
-    # 
-    # GetOverpowers <- function(cardEdgeValues, location){
-    #   edgePlacedCard <- 0
-    #   edgeNeighbors <- c(4,5,6,1,2,3)
-    #   edgeOverpowers <- vector()
-    #   for(neighbor in relationships[relationships[,colnames(relationships) == "placecard"] == location, 
-    #                                 colnames(relationships) == "neighborcard"]){
-    #     edgePlacedCard <- edgePlacedCard + 1
-    #     edgeNeighborCard <- edgeNeighbors[edgePlacedCard]
-    #     if(neighbor > 0 && neighbor <= 19 && boardCards$oc[neighbor] == TRUE){
-    #       if(cardEdgeValues[edgePlacedCard] > as.integer(boardCards[neighbor, edgeNeighborCard])){
-    #         edgeOverpowers <- c(edgeOverpowers, neighbor)
-    #       } 
-    #     }
-    #   }
-    #   return(edgeOverpowers)
-    # }  
-    # 
-    # AddChits <- function(player, addChits, evaluationType){
-    #   # add chit to card placed
-    #   placedCardResults <- 1
-    #   
-    #   if(evaluationType == "test"){
-    #     chitsTest <- chits
-    #     for(chitLocation in addChits){
-    #       # add chit to existing card, with 0 player chits
-    #       if(chitsTest[chitLocation, player] == 0){
-    #         chitsTest[chitLocation, player] == 1
-    #         placedCardResults <- placedCardResults + 1
-    #       }else{
-    #         # add chit to existing card, with 1 player chit
-    #         placedCardResults <- placedCardResults + sum(chitsTest[chitLocation,-player])
-    #         chitsTest[chitLocation, -player] <- 0
-    #       }
-    #     }
-    #   }else if(evaluationType == "real"){
-    #     for(chitLocation in addChits){
-    #       # add chit to existing card, with 0 player chits
-    #       if(chits[chitLocation, player] == 0){
-    #         chits[chitLocation, player] <<- 1
-    #         placedCardResults <- placedCardResults + 1
-    #       }else{
-    #         # add chit to existing card, with 1 player chit
-    #         placedCardResults <- placedCardResults + sum(chits[chitLocation,-player])
-    #         capturedChits[player] <<- capturedChits[player] + sum(chits[chitLocation,-player])
-    #         chits[chitLocation, -player] <<- 0
-    #       }
-    #     }
-    #   }else{
-    #     print("Unexpected evaluation type.")
-    #   }
-    #   return(placedCardResults)
-    # }
-    # 
-    # PlaceCard <- function(player, round, cardEdgeValues, location, evaluationType = c("test", "real")){
-    #   # for card being placed: update board.cards edge values, chit, occupied, and available
-    #   if(evaluationType == "real"){
-    #     boardCards[location, ] <<- c(cardEdgeValues, 1, 0)  
-    #     for (newNeighbor in relationships[relationships[,colnames(relationships) == "placecard"] == location &
-    #                                       relationships[,colnames(relationships) == "neighborcard"] > 0 &
-    #                                       relationships[,colnames(relationships) == "neighborcard"] <= (boardSize),
-    #                                       colnames(relationships) == "neighborcard"]){
-    #       if (length(newNeighbor) > 0 &
-    #           boardCards[newNeighbor,colnames(boardCards) == "occupied"] == 0) {
-    #         boardCards[newNeighbor, colnames(boardCards) == "available"] <<- 1
-    #       }
-    #     }
-    #   }
-    #   addChits <- location
-    #   
-    #   if (round > peaceRounds){ 
-    #     # get matches
-    #     matches <- GetMatches(cardEdgeValues, location)
-    #     # get matched overpowers
-    #     if(length(matches) >= 2){
-    #       for(match in matches){
-    #         matchEdgeValues <- boardCards[match, 1:6]
-    #         matchOverpowers <- GetOverpowers(matchEdgeValues, match)
-    #         # add a chit to all matched cards, and cards overpowered by matched cards
-    #         addChits <- c(addChits, match, matchOverpowers)
-    #       }
-    #     }
-    #     overpoweredNeighbors <- GetOverpowers(cardEdgeValues, location)
-    #     if(length(overpoweredNeighbors) > 0){
-    #       addChits <- c(addChits, overpoweredNeighbors)
-    #     }
-    #   }
-    #   # add chits to all identified cards
-    #   placedCardResults <- AddChits(player = player, addChits = addChits, evaluationType = evaluationType)
-    #   return(placedCardResults)
-    # }            
     
     # SELECT CARD IN HAND
     if(id2 > 19){
@@ -194,27 +277,33 @@ hex <- function(input,
     }
     
     # PLACE SELECTED CARD ON BOARD
-    print(c(id2, boardCards$av[id2], sum(boardCards$se[20:21])))
     if(id2 < 20 & boardCards$av[id2] == 1 & sum(boardCards$se[20:21]) == 1){
       if(boardCards$se[20] == 1){ 
         se <- 20
       } else {
         se <- 21
       }
-      # Update card on board
-      boardCards$e1[id2] <- boardCards$e1[se]
-      boardCards$e2[id2] <- boardCards$e2[se]
-      boardCards$e3[id2] <- boardCards$e3[se]
-      boardCards$e4[id2] <- boardCards$e4[se]
-      boardCards$e5[id2] <- boardCards$e5[se]
-      boardCards$e6[id2] <- boardCards$e6[se]
-      boardCards$im[id2] <- boardCards$im[se]
-      boardCards$c1[id2] <- 1 # Add chit
-      boardCards$se[se] <- 0 # Deselect card from hand
-      boardCards$av[id2] <- 0 # Make placement area unavailable
-      boardCards$oc[id2] <- 1 # Mark placement area as occupied
-      neighbors <- relationships[relationships[,1] == id2,3]
+      boardCards <- PlaceCard(player = boardCards$tu,
+                              round = 3,
+                              cardEdgeValues = c(boardCards$e1[se],
+                                                 boardCards$e2[se],
+                                                 boardCards$e3[se],
+                                                 boardCards$e4[se],
+                                                 boardCards$e5[se],
+                                                 boardCards$e6[se]),
+                              location = id2,
+                              evaluationType = "real")
+      if(boardCards$tu == 1){
+        boardCards$tu <- 2
+      } else {
+        boardCards$tu <- 1
+      }
       
+      boardCards$sc[1] <- sum(boardCards$c1, boardCards$ch[1])
+      boardCards$sc[2] <- sum(boardCards$c2, boardCards$ch[2])
+      
+      # Deselect card from hand
+      boardCards$se[se] <- 0 
       # Update card in hand
       boardCards$e1[se] <- playerCards$e1[-c(boardCards$p1, boardCards$p2)][1]
       boardCards$e2[se] <- playerCards$e2[-c(boardCards$p1, boardCards$p2)][1]
@@ -224,14 +313,7 @@ hex <- function(input,
       boardCards$e6[se] <- playerCards$e6[-c(boardCards$p1, boardCards$p2)][1]
       boardCards$im[se] <- playerCards$im[-c(boardCards$p1, boardCards$p2)][1]
       boardCards$p1 <- c(boardCards$p1, max(boardCards$p1, boardCards$p2) + 1)
-      print(playerCards$im)
-      for(edge in neighbors){
-        if(edge < 20 & boardCards$oc[edge] == 0){
-          boardCards$av[edge] <- 1 #Make all neighbors available
-          boardCards$im[edge] <- "www/spaces/red.png"
-        }
-      }
-      # TODO Add the rest of the card logic and the AI here
+
     }
   })
   

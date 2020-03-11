@@ -44,10 +44,12 @@ function(input, output, session){
                                sc = c(2, 3), # Scores
                                ch = c(0, 0), # Captured chits
                                p1 = c(1, 2), # Player cards taken by player 1
-                               p2 = c(3, 4)) # Playre cards taken by player 2
+                               p2 = c(3, 4), # Player cards taken by player 2
+                               tu = 1, # Turn determination
+                               te = 0) # Test score
   
-  
-  
+  # Determine player 1
+  if(runif(1) > 0.5) boardCards$tu <- 2
   
   ####################################
   #--- Refresh Card Visualization ---#

@@ -40,6 +40,14 @@ fluidPage(
     )
   ),
   
+  # TODO: add captured chits for each player.  
+  # tags$div(
+  #   style = "width: 50px; margin: center;",
+  #   lapply(
+  #     X = seq_len(boardCards$ch[1])
+  #   )
+  # ),
+  
   # Get keyboard input
   tags$script('
     pressedKeyCount = 0;

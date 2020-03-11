@@ -40,13 +40,28 @@ fluidPage(
     )
   ),
   
-  # TODO: add captured chits for each player.  
-  # tags$div(
-  #   style = "width: 50px; margin: center;",
-  #   lapply(
-  #     X = seq_len(boardCards$ch[1])
-  #   )
-  # ),
+  # TODO: add captured chits for each player. Why is this not showing up?
+  tags$div(
+    style = "width: 65px; margin: left;",
+    tags$br(),
+    lapply(
+      X = seq_len(20),
+      FUN = function(x) {
+        chit_UI_player(id = paste0("cplayer", x))
+      }
+    )
+  ),
+  
+  tags$div(
+    style = "width: 65px; margin: left;",
+    tags$br(),
+    lapply(
+      X = seq_len(20),
+      FUN = function(x) {
+        chit_UI_ai(id = paste0("cai", x))
+      }
+    )
+  ),
   
   # Get keyboard input
   tags$script('

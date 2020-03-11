@@ -5,12 +5,13 @@
 # Uses: {base, shiny, glue}
 
 # TODO: 
-# 1) display captured chits, 
+# 1) display captured chits, IN WORK
 # 2) display rules, 
 # 3) display arrows for each placed chit, 
 # 4) pause while placing chits
 # 4) let AI go first
 # 5) display final message after game is over
+# 6) update Readme.md
 
 function(input, output, session){
   
@@ -49,17 +50,18 @@ function(input, output, session){
                                       rep("www/spaces/beige2.png", 18),
                                       paste0("www/hex/", hex_png[1:4])), # Card image
                                se = c(rep(FALSE, boardSize)), # Hand card selected
-                               sc = c(2, 3), # Scores
+                               sc = c(2, 0), # Scores
                                ch = c(0, 0), # Captured chits
                                p1 = c(1, 2), # Player cards taken by player 1
                                p2 = c(3, 4), # Player cards taken by player 2
                                tu = 1, # Turn determination
                                te = 0, # Test score
                                la = 1, # AIs location choice
-                               ar = NA) # Arrow locations
+                               ar = NA, # Arrow locations
+                               ro = 1) # Round
   
   # Determine player 1
-  if(runif(1) > 0.5) boardCards$tu <- 2
+  # if(runif(1) > 0.5) boardCards$tu <- 2
   
   ####################################
   #--- Refresh Card Visualization ---#
@@ -74,6 +76,19 @@ function(input, output, session){
       boardCards = boardCards, 
       playerCards = playerCards
     )
+    for(i in 1:isolate(boardCards$ch[1])){
+    results_mods[[paste0("cplayer",i)]] <- callModule(
+      module = chit_player,
+      id = paste0("cplayer", i)
+    )
+    }
+    for(i in 1:isolate(boardCards$ch[2])){
+      results_mods[[paste0("cai",i)]] <- callModule(
+        module = chit_ai,
+        id = paste0("cai", i)
+      )
+    }
+    print(c(isolate(boardCards$ch[1]), isolate(boardCards$ch[2])))
   }
   
   lapply(

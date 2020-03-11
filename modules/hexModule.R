@@ -287,7 +287,7 @@ hex <- function(input,
       }
       if(boardCards$tu == 1){
         boardCards <- PlaceCard(player = boardCards$tu,
-                                round = 3,
+                                round = boardCards$ro,
                                 cardEdgeValues = c(boardCards$e1[se],
                                                    boardCards$e2[se],
                                                    boardCards$e3[se],
@@ -325,7 +325,7 @@ hex <- function(input,
                          byrow = F, ncol = 6)
         # AI chooses card, rotation, and location
         choice <- EvaluateOptions(player = 2, 
-                                  round = 3, 
+                                  round = boardCards$ro, 
                                   hand = p2Hand, 
                                   intelligence = intelligence)
         # AI chosen card rotated
@@ -333,7 +333,7 @@ hex <- function(input,
         
         # Place AI chosen rotated card
         boardCards <- PlaceCard(player = 2,
-                                round = 3,
+                                round = boardCards$ro,
                                 cardEdgeValues = rotatedCard,
                                 im = boardCards$im[21 + choice$index],
                                 location = choice$location,
@@ -354,10 +354,13 @@ hex <- function(input,
         
         # Update AIs choice
         boardCards$la <- choice$location
+        
+        # Next Round
+        boardCards$ro <- boardCards$ro + 1
       }
       
       # Update scores
-      boardCards$sc[1] <- sum(boardCards$c1, boardCards$ch[1])
+      boardCards$sc[1] <- sum(boardCards$c1, boardCards$ch[1]) + 2
       boardCards$sc[2] <- sum(boardCards$c2, boardCards$ch[2])
     }
   })
@@ -475,7 +478,7 @@ hex <- function(input,
   output$c1 <- renderImage({
     if(boardCards$c1[id2] != 0){
       list(
-        src = paste0("www/chits/chits_01.png"),
+        src = paste0("www/chits/chits_05.png"),
         width = 20,
         height = 20,
         contentType = "image/png"
@@ -488,7 +491,7 @@ hex <- function(input,
   output$c2 <- renderImage({
     if(boardCards$c2[id2] != 0){
       list(
-        src = paste0("www/chits/chits_02.png"),
+        src = paste0("www/chits/chits_06.png"),
         width = 20,
         height = 20,
         contentType = "image/png"

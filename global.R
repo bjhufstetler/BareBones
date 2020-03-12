@@ -28,9 +28,9 @@ cardsPerPlayer <- 6
 playerCount <- 2
 boardSize <- 21 # number of places a card can be placed
 cardEdgeCount <- 6 # number of edges a card has
-peaceRounds <- 2
+peaceRounds <- 4
 intelligence <- 1
-leftOffset <- 200
+leftOffset <- 260
 bottomOffset <- 10
 
 relationships <- as.matrix(
@@ -71,7 +71,17 @@ relationships <- as.matrix(
                             180, 300, 480, 420, 360,
                             240, 120, 60, 0, 60,
                             120, 240, 360, 420, 
-                            300, 180)
+                            300, 180),
+    axLoc = leftOffset + c(208.5, 208.5, 312.75, 312.75, 208.5,
+                           104.25, 104.25, 208.5, 312.75, 417,
+                           417, 417, 312.75, 208.5, 104.25,
+                           0, 0, 0, 104.25, 
+                           -120, -120),
+    ayLoc = bottomOffset + c(240, 360, 300, 180, 120,
+                             180, 300, 480, 420, 360,
+                             240, 120, 60, 0, 60,
+                             120, 240, 360, 420, 
+                             300, 180)
     )
   )
 

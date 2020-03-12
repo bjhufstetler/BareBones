@@ -30,6 +30,7 @@ fluidPage(
   ),
   tags$br(),
   
+  # Put the cards on the board
   tags$div(
     style = "width: 650px; margin: auto;",
     lapply(
@@ -42,7 +43,8 @@ fluidPage(
   
   # TODO: add captured chits for each player. Why is this not showing up?
   tags$div(
-    style = "width: 65px; margin: left;",
+    style = "width: 120px; margin: left;",
+    tags$h4("P1's Captives"),
     tags$br(),
     lapply(
       X = seq_len(20),
@@ -53,7 +55,8 @@ fluidPage(
   ),
   
   tags$div(
-    style = "width: 65px; margin: left;",
+    style = "width: 120px; margin: right;",
+    tags$h4("P2's Captives"),
     tags$br(),
     lapply(
       X = seq_len(20),

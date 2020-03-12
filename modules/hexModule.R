@@ -87,13 +87,16 @@ hex <- function(input,
     
     se <- 19
     # PLACE SELECTED CARD ON BOARD
-    if(id2 < 20 & boardCards$av[id2] == 1 & sum(boardCards$se[20:21]) == 1){
+    if(id2 < 20 & boardCards$av[id2] == 1 & 
+       sum(boardCards$se[20:21]) == 1){
       if(boardCards$se[20] == 1){ 
         se <- 20
       } else {
         se <- 21
       }
-      if(boardCards$tu == 1 & se > 19){
+      if(boardCards$tu == 1 & 
+         se > 19 &  
+         boardCards$im[se] != "www/barebones.png"){
         boardCards <- PlaceCard(player = boardCards$tu,
                                 round = boardCards$ro,
                                 cardEdgeValues = c(boardCards$e1[se],
@@ -120,11 +123,26 @@ hex <- function(input,
         boardCards$im[se] <- playerCards$im[-c(boardCards$p1, boardCards$p2)][1]
         boardCards$p1 <- c(boardCards$p1, max(boardCards$p1, boardCards$p2) + 1)
         
+        # If out of cards, show logo
+        if(boardCards$ro > 8){
+          boardCards$e1[se] <- 0
+          boardCards$e2[se] <- 0
+          boardCards$e3[se] <- 0
+          boardCards$e4[se] <- 0
+          boardCards$e5[se] <- 0
+          boardCards$e6[se] <- 0
+          boardCards$im[se] <- "www/barebones.png"
+        }
+        
         # Change player's turn
         boardCards$tu <- 2
       }
       
-      # AI's move
+      
+      ####################################
+      #------- AI Opponent Logic --------#
+      ####################################
+      
       if(boardCards$tu == 2){
         p2Hand <- matrix(c(boardCards$e1[22:23],
                            boardCards$e2[22:23],
@@ -167,9 +185,6 @@ hex <- function(input,
         
         # Update AIs choice
         boardCards$la <- choice$location
-        
-        # Next Round
-        boardCards$ro <- boardCards$ro + 1
       }
       
       # Update scores

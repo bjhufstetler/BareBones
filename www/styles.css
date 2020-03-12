@@ -6,11 +6,11 @@ body {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-  background: -moz-radial-gradient(circle at center, #F7FBFF, #428bca) fixed;
-  background: -webkit-radial-gradient(circle at center, #F7FBFF, #428bca) fixed;
-  background: -ms-radial-gradient(circle at center, #F7FBFF, #428bca) fixed;
-  background: -o-radial-gradien(circle at center, #F7FBFF, #428bca) fixed;
-  background: radial-gradient(circle at center, #F7FBFF, #428bca) fixed;
+  background: -moz-radial-gradient(circle at center, #e0d0c1, #a76d60) fixed;
+  background: -webkit-radial-gradient(circle at center, #e0d0c1, #a76d60) fixed;
+  background: -ms-radial-gradient(circle at center, #e0d0c1, #a76d60) fixed;
+  background: -o-radial-gradien(circle at center, #e0d0c1, #a76d60) fixed;
+  background: radial-gradient(circle at center, #e0d0c1, #a76d60) fixed;
 }
 
 .title-app {
@@ -25,8 +25,8 @@ h1 {
 
 .shiny-notification-message {
   color: #fff !important;
-  background-color: #5cb85c !important;
-  border: 1px solid #5cb85c !important;
+  background-color: #a76d60 !important;
+  border: 1px solid #a76d60 !important;
 }
 
 #shiny-notification-panel {

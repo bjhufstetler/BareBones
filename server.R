@@ -5,7 +5,7 @@
 # Uses: {base, shiny, glue}
 
 # TODO: 
-# 1) display captured chits, IN WORK
+# 1) display captured chits, COMPLETE - maybe 
 # 2) display rules, 
 # 3) display arrows for each placed chit, 
 # 4) pause while placing chits
@@ -92,7 +92,6 @@ function(input, output, session){
         )
       }
     }
-    print(c(isolate(boardCards$ch[1]), isolate(boardCards$ch[2])))
   }
   
   lapply(
@@ -144,10 +143,6 @@ function(input, output, session){
     }
   })
   
-  observeEvent(boardCards$la,{
-    print(boardCards$im[boardCards$la])
-    refreshCard(boardCards$la)
-  })
 }
 
 

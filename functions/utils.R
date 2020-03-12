@@ -141,8 +141,11 @@ PlaceCard <- function(player,
                       boardCards,
                       se){
   # for card being placed: update board.cards edge values, chit, occupied, and available
-  print(im)
+  
   if(evaluationType == "real"){
+    # Next Round
+    boardCards$ro <- boardCards$ro + 1
+    
     # set edge values, image, occupied = 1, available = 0
     boardCards$e1[location] <- boardCards$e1[se]
     boardCards$e2[location] <- boardCards$e2[se]
@@ -164,14 +167,16 @@ PlaceCard <- function(player,
     }
   }
   addChits <- location
-  
+  arrows <- list("location" = location)
   if (round > peaceRounds){
     # get matches
     matches <- GetMatches(cardEdgeValues, 
                           location, 
                           boardCards = boardCards)
+    
     # get matched overpowers
     if(length(matches) >= 2){
+      arrows$location <- c(arrows$location, matches)
       for(match in matches){
         matchEdgeValues <- c(boardCards$e1[match],
                              boardCards$e2[match],
@@ -184,6 +189,7 @@ PlaceCard <- function(player,
                                          boardCards = boardCards)
         # add a chit to all matched cards, and cards overpowered by matched cards
         addChits <- c(addChits, match, matchOverpowers)
+        arrows[[match]] <- matchOverpowers
       }
     }
     overpoweredNeighbors <- GetOverpowers(cardEdgeValues, 
@@ -191,14 +197,16 @@ PlaceCard <- function(player,
                                           boardCards = boardCards)
     if(length(overpoweredNeighbors) > 0){
       addChits <- c(addChits, overpoweredNeighbors)
+      arrows[[location]] <- overpoweredNeighbors
     }
   }
   # add chits to all identified cards
-  print(addChits)
+  
   boardCards <- AddChits(player = player, 
                          addChits = addChits, 
                          evaluationType = evaluationType,
                          boardCards = boardCards)
+  
   return(boardCards)
 }
 

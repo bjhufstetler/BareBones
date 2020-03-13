@@ -69,30 +69,13 @@ function(input, output, session){
   
   results_mods <- reactiveValues() # I don't know why I need this
   refreshCard <- function(x){
-    print(isolate(boardCards$ch))
     results_mods[[paste0("module", x)]] <- callModule(
       module = hex,
       id = paste0("module", x),
-      id2 = x, 
-      boardCards = boardCards, 
+      id2 = x,
+      boardCards = boardCards,
       playerCards = playerCards
     )
-    if(isolate(boardCards$ch[1] > 0)){
-      for(i in 1:isolate(boardCards$ch[1])){
-      results_mods[[paste0("cplayer",i)]] <- callModule(
-        module = chit_player,
-        id = paste0("cplayer", i)
-      )
-      }
-    }
-    if(isolate(boardCards$ch[2] > 0)){
-      for(i in 1:isolate(boardCards$ch[2])){
-        results_mods[[paste0("cai",i)]] <- callModule(
-          module = chit_ai,
-          id = paste0("cai", i)
-        )
-      }
-    }
   }
   
   lapply(
@@ -119,6 +102,29 @@ function(input, output, session){
   ####################################
   #---------- Rotate Cards ----------#
   ####################################
+  observe({
+      invalidateLater(1000, session)
+    if(isolate(boardCards$ch[1] > 0)){
+      for(i in 1:isolate(boardCards$ch[1])){
+        results_mods[[paste0("cplayer",i)]] <- callModule(
+          module = chit_player,
+          id = paste0("cplayer", i)
+        )
+      }
+    }
+    if(isolate(boardCards$ch[2] > 0)){
+      for(i in 1:isolate(boardCards$ch[2])){
+        results_mods[[paste0("cai",i)]] <- callModule(
+          module = chit_ai,
+          id = paste0("cai", i)
+        )
+      }
+    }
+    if(isolate(boardCards$tu == 2)){
+      Sys.sleep(2)
+      AITurn(isolate(boardCards), isolate(playerCards))
+    }
+  })
   
   observeEvent(input$pressedKey, {
     if(input$pressedKeyID == 37 | input$pressedKeyID == 39){
@@ -143,7 +149,6 @@ function(input, output, session){
       }
     }
   })
-  
 }
 
 

@@ -101,4 +101,6 @@ distribution <- as.matrix(
   dplyr::mutate(distribution, cdf = cumsum(pdf))
 )
 
+
+
 #shareurl <- "https://twitter.com/intent/tweet?text=Play%20Bare%20Bones%20today%20here:&url=https://bjhufstetler.shinyapps.io/BareBones"

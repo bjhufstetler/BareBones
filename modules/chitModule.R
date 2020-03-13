@@ -13,7 +13,7 @@ chit_UI_player <- function(id) {
 chit_player <- function(input, output, session) {
   output$chit_player <- renderImage({
       list(
-        src = "www/chits/chits_06.png", 
+        src = "www/chits/chits_05.png", 
         width = 20, 
         height = 20, 
         contentType = "image/png"
@@ -38,7 +38,7 @@ chit_UI_ai <- function(id) {
 chit_ai<- function(input, output, session) {
   output$chit_ai <- renderImage({
     list(
-      src = "www/chits/chits_05.png", 
+      src = "www/chits/chits_06.png", 
       width = 20, 
       height = 20, 
       contentType = "image/png"

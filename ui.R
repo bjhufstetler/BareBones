@@ -5,7 +5,6 @@
 # Uses: {base, shiny}
 
 fluidPage(
-  
   tags$head(
     tags$link(href = "styles.css", rel = "stylesheet", type = "text/css"),
     tags$script(src = "https://platform.twitter.com/widgets.js")

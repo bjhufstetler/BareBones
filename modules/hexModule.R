@@ -97,99 +97,9 @@ hex <- function(input,
       if(boardCards$tu == 1 & 
          se > 19 &  
          boardCards$im[se] != "www/barebones.png"){
-        boardCards <- PlaceCard(player = boardCards$tu,
-                                round = boardCards$ro,
-                                cardEdgeValues = c(boardCards$e1[se],
-                                                   boardCards$e2[se],
-                                                   boardCards$e3[se],
-                                                   boardCards$e4[se],
-                                                   boardCards$e5[se],
-                                                   boardCards$e6[se]),
-                                im = boardCards$im[se],
-                                location = id2,
-                                evaluationType = "real",
-                                boardCards = boardCards,
-                                se = se)
-        # Deselect card from hand
-        boardCards$se[se] <- 0 
-        
-        # Update card in player's hand
-        boardCards$e1[se] <- playerCards$e1[-c(boardCards$p1, boardCards$p2)][1]
-        boardCards$e2[se] <- playerCards$e2[-c(boardCards$p1, boardCards$p2)][1]
-        boardCards$e3[se] <- playerCards$e3[-c(boardCards$p1, boardCards$p2)][1]
-        boardCards$e4[se] <- playerCards$e4[-c(boardCards$p1, boardCards$p2)][1]
-        boardCards$e5[se] <- playerCards$e5[-c(boardCards$p1, boardCards$p2)][1]
-        boardCards$e6[se] <- playerCards$e6[-c(boardCards$p1, boardCards$p2)][1]
-        boardCards$im[se] <- playerCards$im[-c(boardCards$p1, boardCards$p2)][1]
-        boardCards$p1 <- c(boardCards$p1, max(boardCards$p1, boardCards$p2) + 1)
-        
-        # If out of cards, show logo
-        if(boardCards$ro > 8){
-          boardCards$e1[se] <- 0
-          boardCards$e2[se] <- 0
-          boardCards$e3[se] <- 0
-          boardCards$e4[se] <- 0
-          boardCards$e5[se] <- 0
-          boardCards$e6[se] <- 0
-          boardCards$im[se] <- "www/barebones.png"
-        }
-        
-        # Change player's turn
-        boardCards$tu <- 2
+        boardCards <- PlayerTurn(boardCards, playerCards, se, id2)
       }
       
-      
-      ####################################
-      #------- AI Opponent Logic --------#
-      ####################################
-      
-      if(boardCards$tu == 2){
-        p2Hand <- matrix(c(boardCards$e1[22:23],
-                           boardCards$e2[22:23],
-                           boardCards$e3[22:23],
-                           boardCards$e4[22:23],
-                           boardCards$e5[22:23],
-                           boardCards$e6[22:23]),
-                         byrow = F, ncol = 6)
-        # AI chooses card, rotation, and location
-        choice <- EvaluateOptions(player = 2, 
-                                  round = boardCards$ro, 
-                                  hand = p2Hand, 
-                                  intelligence = intelligence,
-                                  boardCards = boardCards)
-        # AI chosen card rotated
-        rotatedCard <- rep(p2Hand[choice$index, ], 2)[choice$rotation:(choice$rotation + 5)]
-        
-        # Place AI chosen rotated card
-        boardCards <- PlaceCard(player = 2,
-                                round = boardCards$ro,
-                                cardEdgeValues = rotatedCard,
-                                im = boardCards$im[21 + choice$index],
-                                location = choice$location,
-                                evaluationType = "real",
-                                boardCards = boardCards,
-                                se = 21 + choice$index)
-        
-        # Update card in AI's hand
-        boardCards$e1[21 + choice$index] <- playerCards$e1[-c(boardCards$p1, boardCards$p2)][1]
-        boardCards$e2[21 + choice$index] <- playerCards$e2[-c(boardCards$p1, boardCards$p2)][1]
-        boardCards$e3[21 + choice$index] <- playerCards$e3[-c(boardCards$p1, boardCards$p2)][1]
-        boardCards$e4[21 + choice$index] <- playerCards$e4[-c(boardCards$p1, boardCards$p2)][1]
-        boardCards$e5[21 + choice$index] <- playerCards$e5[-c(boardCards$p1, boardCards$p2)][1]
-        boardCards$e6[21 + choice$index] <- playerCards$e6[-c(boardCards$p1, boardCards$p2)][1]
-        boardCards$im[21 + choice$index] <- playerCards$im[-c(boardCards$p1, boardCards$p2)][1]
-        boardCards$p2 <- c(boardCards$p2, max(boardCards$p1, boardCards$p2) + 1)
-        
-        # Change player's turn
-        boardCards$tu <- 1
-        
-        # Update AIs choice
-        boardCards$la <- choice$location
-      }
-      
-      # Update scores
-      boardCards$sc[1] <- sum(boardCards$c1, boardCards$ch[1]) + 2
-      boardCards$sc[2] <- sum(boardCards$c2, boardCards$ch[2])
     }
   })
   
@@ -306,7 +216,7 @@ hex <- function(input,
   output$c1 <- renderImage({
     if(boardCards$c1[id2] != 0){
       list(
-        src = paste0("www/chits/chits_05.png"),
+        src = paste0("www/chits/chits_06.png"),
         width = 20,
         height = 20,
         contentType = "image/png"
@@ -319,7 +229,7 @@ hex <- function(input,
   output$c2 <- renderImage({
     if(boardCards$c2[id2] != 0){
       list(
-        src = paste0("www/chits/chits_06.png"),
+        src = paste0("www/chits/chits_05.png"),
         width = 20,
         height = 20,
         contentType = "image/png"

@@ -111,6 +111,8 @@ AddChits <- function(player, addChits, evaluationType, boardCards){
     capturedChits <- unlist(boardCards$ch)
     for(chitLocation in addChits){
       # add chit to existing card, with 0 player chits
+      print(boardCards$ro)
+      print(chits)
       if(chits[chitLocation, player] == 0){
         chits[chitLocation, player] <- 1
         placedCardResults <- placedCardResults + 1

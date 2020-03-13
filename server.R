@@ -58,7 +58,7 @@ function(input, output, session){
                                te = 0, # Test score
                                la = 1, # AIs location choice
                                ar = NA, # Arrow locations
-                               ro = 1) # Round
+                               ro = 0) # Round
   
   # Determine player 1
   # if(runif(1) > 0.5) boardCards$tu <- 2
@@ -69,6 +69,7 @@ function(input, output, session){
   
   results_mods <- reactiveValues() # I don't know why I need this
   refreshCard <- function(x){
+    print(isolate(boardCards$ch))
     results_mods[[paste0("module", x)]] <- callModule(
       module = hex,
       id = paste0("module", x),

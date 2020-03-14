@@ -13,14 +13,21 @@ fluidPage(
   tags$div(
     class = "title-app",
     tags$h1("Bare Bones Trading Card Game"),
-    tags$h4("Rotate cards with left and right arrow buttons")
+    tags$h4("Rotate cards with left and right arrow buttons"),
+    tags$h4("You are playing with the white pieces, trying to capture black pieces")
   ),
   tags$br(),
   
-  tags$div(
-    style = "width: 200px; margin: center;",
-    timeUI("timer")
-    ),
+  actionButton(
+    inputId = "reload",
+    label = "New Game",
+    style = "width: 200px; margin: auto; background: #a76d60"
+  ),
+  
+  # tags$div(
+  #   style = "width: 200px; margin: center;",
+  #   timeUI("timer")
+  #   ),
   tags$br(),
   
   tags$div(
@@ -70,6 +77,7 @@ fluidPage(
       }
     )
   ),
+
   
   # Get keyboard input
   tags$script('

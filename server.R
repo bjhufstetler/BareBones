@@ -12,7 +12,6 @@
 # 4) let AI go first
 # 5) display final message after game is over
 # 6) update Readme.md
-
 function(input, output, session){
   
   start <- callModule(module = welcome, id = "welcome")
@@ -60,10 +59,11 @@ function(input, output, session){
                                ar = list(), # Arrow locations
                                ro = 0, # Round
                                ac = NULL, # Altered Cards
-                               cp = FALSE) # Card Placed
+                               cp = FALSE,
+                               ms = FALSE) # Card Placed
   
   # Determine player 1
-  # if(runif(1) > 0.5) boardCards$tu <- 2
+   if(runif(1) > 0.5) isolate(boardCards$tu <- 2)
   
   ####################################
   #--- Refresh Card Visualization ---#
@@ -154,12 +154,45 @@ function(input, output, session){
   })
   
   ####################################
+  #---------- Message Turn ----------#
+  ####################################
+  
+  observe({
+    whoseTurn <- boardCards$tu
+    if(identical(whoseTurn, 1) & 
+       timer() > 2 &
+       isFALSE(boardCards$ms) &
+       boardCards$ro < 12){
+      showNotification(
+        ui = tags$div(
+          style = "font-size: 160%; font-weight: bold;",
+          "Player's Turn",
+        ), type = "message"
+      )
+      isolate(boardCards$ms <- TRUE)
+    } else if(identical(whoseTurn, 2) & 
+              timer() > 2 &
+              isFALSE(boardCards$ms) &
+              boardCards$ro < 12){
+      showNotification(
+        ui = tags$div(
+          style = "font-size: 160%; font-weight: bold;",
+          "AI's Turn",
+        ), type = "message"
+      )
+      isolate(boardCards$ms <- TRUE)
+    }
+  })
+  
+  ####################################
   #------------ AI's Turn -----------#
   ####################################
   
   observe({
     invalidateLater(1000, session)
-    if(identical(isolate(boardCards$tu), 2)){
+    if(identical(isolate(boardCards$tu), 2) &
+       isolate(boardCards$ro) < 12 &
+       timer() > 2){
       Sys.sleep(2)
       AITurn(isolate(boardCards), isolate(playerCards))
     }
@@ -168,9 +201,8 @@ function(input, output, session){
   ####################################
   #------------ Game Over -----------#
   ####################################
-  
+
   observe({
-    #invalidateLater(1000, session)
     gameRound <- boardCards$ro
     if (identical(gameRound, 12)) {
       if(isolate(boardCards$sc[1]) >= isolate(boardCards$sc[2])){
@@ -187,11 +219,11 @@ function(input, output, session){
             tags$span(icon("trophy"), style = "color: #F7E32F;")
           ),
           tags$h4(paste0("You've ", result, " the game!")),
-          tags$h1(isolate(timer()), "seconds!"),
+          #tags$h1(isolate(timer()), "seconds!"),
           tags$br(), tags$br(),
           tags$a(
             href = glue(shareurl, time = isolate(timer())),
-            icon("twitter"), "Tweet your score !", 
+            icon("twitter"), "Share BareBones on Twitter!", 
             class = "btn btn-info btn-lg"
           ),
           tags$br(), tags$br(),
@@ -202,7 +234,7 @@ function(input, output, session){
           )
         ),
         footer = NULL,
-        easyClose = FALSE
+        easyClose = TRUE
       ))
     }
   })

@@ -6,9 +6,9 @@
 
 # Packages
 
-#library("shiny")
-#library("glue")
-#library("dplyr")
+library("shiny")
+library("glue")
+library("dplyr")
 
 # Modules
 
@@ -104,4 +104,5 @@ distribution <- as.matrix(
 
 
 
-#shareurl <- "https://twitter.com/intent/tweet?text=Play%20Bare%20Bones%20today%20here:&url=https://bjhufstetler.shinyapps.io/BareBones"
+shareurl <- "https://twitter.com/intent/tweet?text=Play%20Bare%20Bones%20today%20here:&url=https://bjhufstetler.shinyapps.io/BareBones"
+

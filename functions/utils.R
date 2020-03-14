@@ -219,7 +219,7 @@ PlaceCard <- function(player,
                          addChits = addChits, 
                          evaluationType = evaluationType,
                          boardCards = boardCards)
-  boardCards$cp <- 1
+  boardCards$cp <- TRUE
   boardCards$ac <- addChits
   
   return(boardCards)
@@ -283,8 +283,6 @@ AITurn <- function(boardCards, playerCards){
                               boardCards = boardCards)
     # AI chosen card rotated
     rotatedCard <- rep(p2Hand[choice$index, ], 2)[choice$rotation:(choice$rotation + 5)]
-    print(p2Hand[choice$index, ])
-    print(rotatedCard)
     # Place AI chosen rotated card
     boardCards <- PlaceCard(player = 2,
                             round = boardCards$ro,

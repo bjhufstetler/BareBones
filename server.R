@@ -60,7 +60,7 @@ function(input, output, session){
                                ar = list(), # Arrow locations
                                ro = 0, # Round
                                ac = NULL, # Altered Cards
-                               cp = 0) # Card Placed
+                               cp = FALSE) # Card Placed
   
   # Determine player 1
   # if(runif(1) > 0.5) boardCards$tu <- 2
@@ -102,11 +102,12 @@ function(input, output, session){
   }, ignoreInit = TRUE)
   
   ####################################
-  #---------- Rotate Cards ----------#
+  #---------- Card Placed -----------#
   ####################################
+  
   observe({
-    invalidateLater(100, session)
-    if(isolate(boardCards$cp == 1)){
+    cardPlaced <- boardCards$cp
+    if(isTRUE(cardPlaced)){
       isolate(boardCards$ar[[20]] <- 1)
       
       # Update card numbers and chits
@@ -146,17 +147,70 @@ function(input, output, session){
           )
         }
       }
-      isolate(boardCards$cp <- 0)
+      
+      # Reset cardPlaced tracker 
+      isolate(boardCards$cp <- FALSE)
     }
   })
   
+  ####################################
+  #------------ AI's Turn -----------#
+  ####################################
+  
   observe({
     invalidateLater(1000, session)
-    if(isolate(boardCards$tu == 2)){
+    if(identical(isolate(boardCards$tu), 2)){
       Sys.sleep(2)
       AITurn(isolate(boardCards), isolate(playerCards))
     }
   })
+  
+  ####################################
+  #------------ Game Over -----------#
+  ####################################
+  
+  observe({
+    #invalidateLater(1000, session)
+    gameRound <- boardCards$ro
+    if (identical(gameRound, 12)) {
+      if(isolate(boardCards$sc[1]) >= isolate(boardCards$sc[2])){
+        result <- "won"
+      } else {
+        result <- "lost"
+      }
+      showModal(modalDialog(
+        tags$div(
+          style = "text-align: center;",
+          tags$h2(
+            tags$span(icon("trophy"), style = "color: #F7E32F;"),
+            "Well done !",
+            tags$span(icon("trophy"), style = "color: #F7E32F;")
+          ),
+          tags$h4(paste0("You've ", result, " the game!")),
+          tags$h1(isolate(timer()), "seconds!"),
+          tags$br(), tags$br(),
+          tags$a(
+            href = glue(shareurl, time = isolate(timer())),
+            icon("twitter"), "Tweet your score !", 
+            class = "btn btn-info btn-lg"
+          ),
+          tags$br(), tags$br(),
+          actionButton(
+            inputId = "reload",
+            label = "Play again !",
+            style = "width: 100%;"
+          )
+        ),
+        footer = NULL,
+        easyClose = FALSE
+      ))
+    }
+  })
+  
+  
+  ####################################
+  #---------- Rotate Cards ----------#
+  ####################################
   
   observeEvent(input$pressedKey, {
     if(input$pressedKeyID == 37 | input$pressedKeyID == 39){
@@ -182,5 +236,4 @@ function(input, output, session){
     }
   })
 }
-
 

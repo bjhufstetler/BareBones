@@ -37,6 +37,12 @@ fluidPage(
       FUN = function(x) {
         hexUI(id = paste0("module", x), id2 = x)
       }
+    ),
+    lapply(
+      X = seq_len(21),
+      FUN = function(x) {
+        arrow_UI(id = paste0("arrow", x), location = x)
+      }
     )
   ),
   

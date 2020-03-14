@@ -36,6 +36,7 @@ GetMatches <- function(cardEdgeValues, location, boardCards){ # pass the 6 edge 
   edgePlacedCard <- 0
   edgeNeighbors <- c(4,5,6,1,2,3)
   edgeMatches <- vector()
+  edgeNumbers <- vector()
   # neighbor is the location of each adjacent card starting at the top and going clockwise
   for(neighbor in relationships[relationships[,colnames(relationships) == "placecard"] == location,
                                 colnames(relationships) == "neighborcard"]){
@@ -52,10 +53,13 @@ GetMatches <- function(cardEdgeValues, location, boardCards){ # pass the 6 edge 
                                   boardCards$e6[neighbor])
       if(cardEdgeValues[edgePlacedCard] == as.integer(edgeNeighborValue)){
         edgeMatches <- c(edgeMatches, neighbor)
+        edgeNumbers <- c(edgeNumbers, edgePlacedCard)
       }
     }
   }
-  return(edgeMatches) # edgeMatches is the location of a matched card
+  return(list(edgeMatches = edgeMatches, 
+              edgeNumbers = edgeNumbers)
+         ) # edgeMatches is the location of a matched card
 }
 
 # FIND OVERPOWERED CARDS
@@ -63,6 +67,7 @@ GetOverpowers <- function(cardEdgeValues, location, boardCards){
   edgePlacedCard <- 0
   edgeNeighbors <- c(4,5,6,1,2,3)
   edgeOverpowers <- vector()
+  edgeNumbers <- vector()
   for(neighbor in relationships[relationships[,colnames(relationships) == "placecard"] == location,
                                 colnames(relationships) == "neighborcard"]){
     edgePlacedCard <- edgePlacedCard + 1
@@ -77,10 +82,13 @@ GetOverpowers <- function(cardEdgeValues, location, boardCards){
                                   boardCards$e6[neighbor])
       if(cardEdgeValues[edgePlacedCard] > as.integer(edgeNeighborValue)){
         edgeOverpowers <- c(edgeOverpowers, neighbor)
+        edgeNumbers <- c(edgeNumbers, edgePlacedCard)
       }
     }
   }
-  return(edgeOverpowers) # edgeOverpowers is the location of an overpowered card
+  return(list(edgeOverpowers = edgeOverpowers, 
+              edgeNumbers = edgeNumbers)
+         ) # edgeOverpowers is the location of an overpowered card
 }
 
 # PLACE CHITS
@@ -147,12 +155,12 @@ PlaceCard <- function(player,
     boardCards$ro <- boardCards$ro + 1
     
     # set edge values, image, occupied = 1, available = 0
-    boardCards$e1[location] <- boardCards$e1[se]
-    boardCards$e2[location] <- boardCards$e2[se]
-    boardCards$e3[location] <- boardCards$e3[se]
-    boardCards$e4[location] <- boardCards$e4[se]
-    boardCards$e5[location] <- boardCards$e5[se]
-    boardCards$e6[location] <- boardCards$e6[se]
+    boardCards$e1[location] <- cardEdgeValues[1]
+    boardCards$e2[location] <- cardEdgeValues[2]
+    boardCards$e3[location] <- cardEdgeValues[3]
+    boardCards$e4[location] <- cardEdgeValues[4]
+    boardCards$e5[location] <- cardEdgeValues[5]
+    boardCards$e6[location] <- cardEdgeValues[6]
     boardCards$im[location] <- im
     boardCards$av[location] <- 0 # Make placement area unavailable
     boardCards$oc[location] <- 1 # Mark placement area as occupied
@@ -169,15 +177,16 @@ PlaceCard <- function(player,
   addChits <- location
   arrows <- list("location" = location)
   if (round > peaceRounds){
+    boardCards$ar <- list()
     # get matches
     matches <- GetMatches(cardEdgeValues, 
                           location, 
                           boardCards = boardCards)
-    
+    boardCards$ar[[location]] <- rep(0,6)
     # get matched overpowers
-    if(length(matches) >= 2){
-      arrows$location <- c(arrows$location, matches)
-      for(match in matches){
+    if(length(matches$edgeMatches) >= 2){
+      boardCards$ar[[location]][matches$edgeNumbers] <- 1
+      for(match in matches$edgeMatches){
         matchEdgeValues <- c(boardCards$e1[match],
                              boardCards$e2[match],
                              boardCards$e3[match],
@@ -187,17 +196,21 @@ PlaceCard <- function(player,
         matchOverpowers <- GetOverpowers(matchEdgeValues, 
                                          match, 
                                          boardCards = boardCards)
+        
+        boardCards$ar[[match]] <- rep(0,6)
+        boardCards$ar[[match]][matchOverpowers$edgeNumbers] <- 1
         # add a chit to all matched cards, and cards overpowered by matched cards
-        addChits <- c(addChits, match, matchOverpowers)
-        arrows[[match]] <- matchOverpowers
+        addChits <- c(addChits, match, matchOverpowers$edgeOverpowers)
+        arrows[[match]] <- rep(0,6)
+        arrows[[match]][matchOverpowers$edgeNumbers] <- 1
       }
     }
     overpoweredNeighbors <- GetOverpowers(cardEdgeValues, 
                                           location,
                                           boardCards = boardCards)
-    if(length(overpoweredNeighbors) > 0){
-      addChits <- c(addChits, overpoweredNeighbors)
-      arrows[[location]] <- overpoweredNeighbors
+    boardCards$ar[[location]][overpoweredNeighbors$edgeNumbers] <- 1
+    if(length(overpoweredNeighbors$edgeOverpowers) > 0){
+      addChits <- c(addChits, overpoweredNeighbors$edgeOverpoweres)
     }
   }
   # add chits to all identified cards
@@ -206,6 +219,8 @@ PlaceCard <- function(player,
                          addChits = addChits, 
                          evaluationType = evaluationType,
                          boardCards = boardCards)
+  boardCards$cp <- 1
+  boardCards$ac <- addChits
   
   return(boardCards)
 }
@@ -268,7 +283,8 @@ AITurn <- function(boardCards, playerCards){
                               boardCards = boardCards)
     # AI chosen card rotated
     rotatedCard <- rep(p2Hand[choice$index, ], 2)[choice$rotation:(choice$rotation + 5)]
-    
+    print(p2Hand[choice$index, ])
+    print(rotatedCard)
     # Place AI chosen rotated card
     boardCards <- PlaceCard(player = 2,
                             round = boardCards$ro,

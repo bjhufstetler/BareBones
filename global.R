@@ -16,6 +16,7 @@ source("modules/hexModule.R")
 source("modules/timeModule.R")
 source("modules/scoreModule.R")
 source("modules/welcomeModule.R")
+source("modules/arrowModule.R")
 source("modules/chitModule.R")
 
 # Functions

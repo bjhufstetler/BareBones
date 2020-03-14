@@ -57,8 +57,10 @@ function(input, output, session){
                                tu = 1, # Turn determination
                                te = 0, # Test score
                                la = 1, # AIs location choice
-                               ar = NA, # Arrow locations
-                               ro = 0) # Round
+                               ar = list(), # Arrow locations
+                               ro = 0, # Round
+                               ac = NULL, # Altered Cards
+                               cp = 0) # Card Placed
   
   # Determine player 1
   # if(runif(1) > 0.5) boardCards$tu <- 2
@@ -82,7 +84,7 @@ function(input, output, session){
     X = seq_len(21),
     FUN = function(x){refreshCard(x)}
     )
-  
+
   ####################################
   #--------- Display Scores ---------#
   ####################################
@@ -103,23 +105,53 @@ function(input, output, session){
   #---------- Rotate Cards ----------#
   ####################################
   observe({
-      invalidateLater(1000, session)
-    if(isolate(boardCards$ch[1] > 0)){
-      for(i in 1:isolate(boardCards$ch[1])){
-        results_mods[[paste0("cplayer",i)]] <- callModule(
-          module = chit_player,
-          id = paste0("cplayer", i)
-        )
+    invalidateLater(100, session)
+    if(isolate(boardCards$cp == 1)){
+      isolate(boardCards$ar[[20]] <- 1)
+      
+      # Update card numbers and chits
+      for(x in isolate(boardCards$ac)){
+        refreshCard(x)
       }
-    }
-    if(isolate(boardCards$ch[2] > 0)){
-      for(i in 1:isolate(boardCards$ch[2])){
-        results_mods[[paste0("cai",i)]] <- callModule(
-          module = chit_ai,
-          id = paste0("cai", i)
-        )
+      
+      # Update arrows
+      lapply(
+        X = seq_len(19),
+        FUN = function(x) {
+          results_mods[[paste0("arrow", x)]] <- callModule(
+            module = arrow,
+            id = paste0("arrow", x),
+            location = x,
+            sides = isolate(boardCards$ar[[x]])
+          )
+        }
+      )
+      
+      # Update P1 captured chits
+      if(isolate(boardCards$ch[1] > 0)){
+        for(i in 1:isolate(boardCards$ch[1])){
+          results_mods[[paste0("cplayer",i)]] <- callModule(
+            module = chit_player,
+            id = paste0("cplayer", i)
+          )
+        }
       }
+      
+      # Update P2 captured chits
+      if(isolate(boardCards$ch[2] > 0)){
+        for(i in 1:isolate(boardCards$ch[2])){
+          results_mods[[paste0("cai",i)]] <- callModule(
+            module = chit_ai,
+            id = paste0("cai", i)
+          )
+        }
+      }
+      isolate(boardCards$cp <- 0)
     }
+  })
+  
+  observe({
+    invalidateLater(1000, session)
     if(isolate(boardCards$tu == 2)){
       Sys.sleep(2)
       AITurn(isolate(boardCards), isolate(playerCards))

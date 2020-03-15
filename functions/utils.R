@@ -322,7 +322,7 @@ AITurn <- function(boardCards, playerCards){
   }
   
   # Update scores
-  boardCards$sc[1] <- sum(boardCards$c1, boardCards$ch[1]) + 2
+  boardCards$sc[1] <- sum(boardCards$c1, boardCards$ch[1])
   boardCards$sc[2] <- sum(boardCards$c2, boardCards$ch[2])
   
   boardCards$tu <- 1
@@ -370,6 +370,10 @@ PlayerTurn <- function(boardCards, playerCards, se, id2){
     boardCards$e6[se] <- 0
     boardCards$im[se] <- "www/barebones.png"
   }
+  
+  # Update scores
+  boardCards$sc[1] <- sum(boardCards$c1, boardCards$ch[1])
+  boardCards$sc[2] <- sum(boardCards$c2, boardCards$ch[2])
   
   boardCards$tu <- 2
   return(boardCards)

@@ -64,7 +64,7 @@ function(input, output, session){
   
   # Determine player 1
   if(runif(1) > 0.5) isolate(boardCards$tu <- 2) # Determine the first player 50/50 chance
-  isolate(boardCards$sc[boardCards$tu] <- 2) # The first player gets a 2 point bonus 
+  isolate(boardCards$ch[boardCards$tu] <- 2) # The first player gets a 2 point bonus 
   ####################################
   #--- Refresh Card Visualization ---#
   ####################################

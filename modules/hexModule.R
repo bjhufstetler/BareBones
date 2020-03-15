@@ -6,7 +6,7 @@ hexUI <- function(id, id2){
   tagList(
     # Selected Card Outline
     absolutePanel(
-      top = relationships[id2, 6] - 2, left = relationships[id2, 5] - 3, 
+      bottom = relationships[id2, 6] - 2, left = relationships[id2, 5] - 3, 
       width = 139, draggable = F, fixed = T,
       imageOutput(
         outputId = ns("hexSelected"),
@@ -15,7 +15,7 @@ hexUI <- function(id, id2){
     ),
     # Card Image
     absolutePanel(
-      top = relationships[id2, 6], left = relationships[id2, 5], width = 139, 
+      bottom = relationships[id2, 6], left = relationships[id2, 5], width = 139, 
       draggable = F, fixed = T,
       imageOutput(
         outputId = ns("hex"),
@@ -23,51 +23,51 @@ hexUI <- function(id, id2){
         width = 139, height = 120, inline = TRUE
       )
     ),
-    # Top Number
+    # bottom Number
     absolutePanel(
-      top = (relationships[id2, 6] + 90), left = (relationships[id2, 5] + 60),
+      bottom = (relationships[id2, 6] + 90), left = (relationships[id2, 5] + 60),
       fixed = T,
       imageOutput(outputId = ns("e1"), inline = TRUE)
     ),
-    # Top Right Number
+    # bottom Right Number
     absolutePanel(
-      top = (relationships[id2, 6] + 70), left = (relationships[id2, 5] + 95), 
+      bottom = (relationships[id2, 6] + 70), left = (relationships[id2, 5] + 95), 
       fixed = T,
       imageOutput(outputId = ns("e2"), inline = TRUE)
     ),
     # Bottom Right Number
     absolutePanel(
-      top = (relationships[id2, 6] + 30), left = (relationships[id2, 5] + 95),
+      bottom = (relationships[id2, 6] + 30), left = (relationships[id2, 5] + 95),
       fixed = T,
       imageOutput(outputId = ns("e3"), inline = TRUE)
     ),
     # Bottom Number
     absolutePanel(
-      top = (relationships[id2, 6] + 10), left = (relationships[id2, 5] + 60),
+      bottom = (relationships[id2, 6] + 10), left = (relationships[id2, 5] + 60),
       fixed = T,
       imageOutput(outputId = ns("e4"), inline = TRUE)
     ),
     # Bottom Left Number
     absolutePanel(
-      top = (relationships[id2, 6] + 30), left = (relationships[id2, 5] + 25),
+      bottom = (relationships[id2, 6] + 30), left = (relationships[id2, 5] + 25),
       fixed = T,
       imageOutput(outputId = ns("e5"), inline = TRUE)
     ),
-    # Top Left Number
+    # bottom Left Number
     absolutePanel(
-      top = (relationships[id2, 6] + 70), left = (relationships[id2, 5] + 25),
+      bottom = (relationships[id2, 6] + 70), left = (relationships[id2, 5] + 25),
       fixed = T,
       imageOutput(outputId = ns("e6"), inline = TRUE)
     ),
     # Left Chit
     absolutePanel(
-      top = (relationships[id2, 6] + 50), left = (relationships[id2, 5] + 45),
+      bottom = (relationships[id2, 6] + 50), left = (relationships[id2, 5] + 45),
       fixed = T,
       imageOutput(outputId = ns("c1"), inline = TRUE)
     ),
     # Right Chit
     absolutePanel(
-      top = (relationships[id2, 6] + 50), left = (relationships[id2, 5] + 70),
+      bottom = (relationships[id2, 6] + 50), left = (relationships[id2, 5] + 70),
       fixed = T,
       imageOutput(outputId = ns("c2"), inline = TRUE)
     )
@@ -81,7 +81,6 @@ hex <- function(input,
                 boardCards, 
                 playerCards
                 ){
-  
   ####################################
   #------- Card Click Logic ---------#
   ####################################
@@ -109,7 +108,6 @@ hex <- function(input,
          boardCards$im[se] != "www/barebones.png"){
         boardCards <- PlayerTurn(boardCards, playerCards, se, id2)
       }
-      
     }
   })
   
@@ -144,7 +142,7 @@ hex <- function(input,
       contentType = "image/png")
   }, deleteFile = FALSE)
   
-  # Top number
+  # bottom number
   output$e1 <- renderImage({
     if(boardCards$e1[id2] != 0){
       list(
@@ -157,7 +155,7 @@ hex <- function(input,
       }
   }, deleteFile = FALSE)
   
-  # Top Right Number
+  # bottom Right Number
   output$e2 <- renderImage({
     if(boardCards$e2[id2] != 0){
       list(
@@ -209,7 +207,7 @@ hex <- function(input,
       }
   }, deleteFile = FALSE)
   
-  # Top Left Number
+  # bottom Left Number
   output$e6 <- renderImage({
     if(boardCards$e6[id2] != 0){
       list(

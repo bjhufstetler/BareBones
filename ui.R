@@ -5,30 +5,34 @@
 # Uses: {base, shiny}
 
 fluidPage(
-  
+  # Import the .css information
   tags$head(
     tags$link(href = "styles.css", rel = "stylesheet", type = "text/css"),
     tags$script(src = "https://platform.twitter.com/widgets.js")
   ),
   
-  absolutePanel(top = 10, left = 480, width = 300, 
+  # Title
+  absolutePanel(bottom = 600, left = 480, width = 300, 
                 tags$h1("Bare Bones TCG")
   ),
   
-  absolutePanel(top = 50, left = 50, width = 200, 
+  # New Game Button
+  absolutePanel(bottom = 550, left = 50, width = 200, 
   actionButton(
     inputId = "reload",
     label = "New Game",
     style = "width: 160px; margin: auto; background: #a76d60"
   )),
   
-  absolutePanel(top = 100, left = 50, width = 200, 
+  # Score Module
+  absolutePanel(bottom = 450, left = 50, width = 200, 
   tags$div(
     style = "width: 160px; margin: center;",
     scoreUI("score")
   )),
   
-  absolutePanel(top = 200, left = 50, width = 200, 
+  # White Player's captured chits
+  absolutePanel(bottom = 350, left = 50, width = 200, 
     tags$div(
       style = "width: 160px; margin: center;",
       tags$h4("White Player's Captives"),
@@ -41,7 +45,8 @@ fluidPage(
     )
   ),
   
-  absolutePanel(top = 300, left = 50, width = 200, 
+  # Black Player's captured chits
+  absolutePanel(bottom = 250, left = 50, width = 200, 
     tags$div(
       style = "width: 160px; margin: right;",
       tags$h4("Black Player's Captives"),
@@ -53,13 +58,14 @@ fluidPage(
       )
     )),
   
-  absolutePanel(top = 500, left = 50, width = 400, 
+  # Notes
+  absolutePanel(bottom = 50, left = 50, width = 400, 
     "*Rotate cards with keyboard arrows", tags$br(),
     "*No attacking on first two rounds", tags$br(),
     "*First player gets two bonus points and wins ties"
   ),
   
-  # Put the cards on the board
+  # Cards
   tags$div(
     style = "width: 650px; margin: auto;",
     lapply(
@@ -76,9 +82,7 @@ fluidPage(
     )
   ),
   
-
-  
-  # Get keyboard input
+  # Keyboard input
   tags$script('
     pressedKeyCount = 0;
     $(document).on("keydown", function (e) {

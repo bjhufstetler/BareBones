@@ -32,7 +32,7 @@ cardEdgeCount <- 6 # number of edges a card has
 peaceRounds <- 4
 intelligence <- 1
 leftOffset <- 350
-topOffset <- 75
+bottomOffset <- 10
 
 relationships <- as.matrix(
   data.frame(
@@ -68,7 +68,7 @@ relationships <- as.matrix(
                           417, 417, 312.75, 208.5, 104.25,
                           0, 0, 0, 104.25, 
                           -120, -120),
-    yLoc = topOffset + c(240, 360, 300, 180, 120,
+    yLoc = bottomOffset + c(240, 360, 300, 180, 120,
                             180, 300, 480, 420, 360,
                             240, 120, 60, 0, 60,
                             120, 240, 360, 420, 
@@ -78,7 +78,7 @@ relationships <- as.matrix(
                            417, 417, 312.75, 208.5, 104.25,
                            0, 0, 0, 104.25, 
                            -120, -120),
-    ayLoc = topOffset + c(240, 360, 300, 180, 120,
+    ayLoc = bottomOffset + c(240, 360, 300, 180, 120,
                              180, 300, 480, 420, 360,
                              240, 120, 60, 0, 60,
                              120, 240, 360, 420, 

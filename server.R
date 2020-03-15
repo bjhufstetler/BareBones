@@ -99,7 +99,17 @@ function(input, output, session){
   
   observeEvent(input$reload, {
     session$reload()
-  }, ignoreInit = TRUE)
+    }, 
+    ignoreInit = TRUE
+    )
+  
+  ####################################
+  #------------ Help File -----------#
+  ####################################
+  
+  observeEvent(input$help, {
+    helpUI()
+    })
   
   ####################################
   #---------- Card Placed -----------#

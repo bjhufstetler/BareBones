@@ -5,3 +5,5 @@
 *.Rproj
 *.xcf
 rsconnect/
+*.bib
+*.Rmd

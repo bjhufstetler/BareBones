@@ -195,9 +195,8 @@ function(input, output, session){
     if(identical(isolate(boardCards$tu), 2) &
        isolate(boardCards$ro) < 13 &
        timer() > 2){
-      AITurn(isolate(boardCards), isolate(playerCards))
       Sys.sleep(2)
-      isolate(boardCards$tu <- 1)
+      AITurn(isolate(boardCards), isolate(playerCards))
     }
   })
   

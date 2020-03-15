@@ -49,7 +49,7 @@ function(input, output, session){
                                       rep("www/spaces/beige2.png", 18),
                                       paste0("www/hex/", hex_png[1:4])), # Card image
                                se = c(rep(FALSE, boardSize)), # Hand card selected
-                               sc = c(2, 0), # Scores
+                               sc = c(0, 0), # Scores
                                ch = c(0, 0), # Captured chits
                                p1 = c(1, 2), # Player cards taken by player 1
                                p2 = c(3, 4), # Player cards taken by player 2
@@ -57,14 +57,14 @@ function(input, output, session){
                                te = 0, # Test score
                                la = 1, # AIs location choice
                                ar = list(), # Arrow locations
-                               ro = 0, # Round
+                               ro = 1, # Round
                                ac = NULL, # Altered Cards
                                cp = FALSE,
                                ms = FALSE) # Card Placed
   
   # Determine player 1
-   if(runif(1) > 0.5) isolate(boardCards$tu <- 2)
-  
+  if(runif(1) > 0.5) isolate(boardCards$tu <- 2) # Determine the first player 50/50 chance
+  isolate(boardCards$sc[boardCards$tu] <- 2) # The first player gets a 2 point bonus 
   ####################################
   #--- Refresh Card Visualization ---#
   ####################################
@@ -148,6 +148,8 @@ function(input, output, session){
         }
       }
       
+      isolate(boardCards$ro <- boardCards$ro + 1)
+      
       # Reset cardPlaced tracker 
       isolate(boardCards$cp <- FALSE)
     }
@@ -160,7 +162,7 @@ function(input, output, session){
   observe({
     whoseTurn <- boardCards$tu
     if(identical(whoseTurn, 1) & 
-       timer() > 2 &
+       timer() > 0.1 &
        isFALSE(boardCards$ms) &
        boardCards$ro < 12){
       showNotification(
@@ -189,12 +191,13 @@ function(input, output, session){
   ####################################
   
   observe({
-    invalidateLater(1000, session)
+    isolate(boardCards$tu)
     if(identical(isolate(boardCards$tu), 2) &
-       isolate(boardCards$ro) < 12 &
+       isolate(boardCards$ro) < 13 &
        timer() > 2){
-      Sys.sleep(2)
       AITurn(isolate(boardCards), isolate(playerCards))
+      Sys.sleep(2)
+      isolate(boardCards$tu <- 1)
     }
   })
   
@@ -204,8 +207,10 @@ function(input, output, session){
 
   observe({
     gameRound <- boardCards$ro
-    if (identical(gameRound, 12)) {
-      if(isolate(boardCards$sc[1]) >= isolate(boardCards$sc[2])){
+    if (identical(gameRound, 13)) {
+      Sys.sleep(3)
+      if((isolate(boardCards$sc[1]) >= isolate(boardCards$sc[2]) & isolate(boardCards$tu) == 1) |
+         (isolate(boardCards$sc[1]) > isolate(boardCards$sc[2]))){
         result <- "won"
       } else {
         result <- "lost"
@@ -219,18 +224,12 @@ function(input, output, session){
             tags$span(icon("trophy"), style = "color: #F7E32F;")
           ),
           tags$h4(paste0("You've ", result, " the game!")),
-          #tags$h1(isolate(timer()), "seconds!"),
+          tags$h4(paste0(isolate(boardCards$sc[1]), " to ", isolate(boardCards$sc[2]))),
           tags$br(), tags$br(),
           tags$a(
             href = glue(shareurl, time = isolate(timer())),
             icon("twitter"), "Share BareBones on Twitter!", 
             class = "btn btn-info btn-lg"
-          ),
-          tags$br(), tags$br(),
-          actionButton(
-            inputId = "reload",
-            label = "Play again !",
-            style = "width: 100%;"
           )
         ),
         footer = NULL,

@@ -6,9 +6,8 @@ scoreUI <- function(id){
   
   tags$div(
     style = "width:100%; text-align: center;",
-    "Scores",
-    tags$br(),
-    "Player : Computer",
+    tags$h4("Scores"),
+    "White : Black",
     tags$br(),
     verbatimTextOutput(outputId = "score_ui")
   )

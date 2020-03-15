@@ -13,8 +13,7 @@ fluidPage(
   tags$div(
     class = "title-app",
     tags$h1("Bare Bones Trading Card Game"),
-    tags$h4("Rotate cards with left and right arrow buttons"),
-    tags$h4("You are playing with the white pieces, trying to capture black pieces")
+    tags$h4("Rotate cards with left and right arrow buttons")
   ),
   tags$br(),
   
@@ -56,7 +55,7 @@ fluidPage(
   # TODO: add captured chits for each player. Why is this not showing up?
   tags$div(
     style = "width: 120px; margin: left;",
-    tags$h4("P1's Captives"),
+    tags$h4("White Player's Captives"),
     tags$br(),
     lapply(
       X = seq_len(20),
@@ -68,7 +67,7 @@ fluidPage(
   
   tags$div(
     style = "width: 120px; margin: right;",
-    tags$h4("P2's Captives"),
+    tags$h4("Black Player's Captives"),
     tags$br(),
     lapply(
       X = seq_len(20),

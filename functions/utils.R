@@ -184,8 +184,7 @@ PlaceCard <- function(player,
         boardCards$im[edge] <- "www/spaces/red.png"
       }
     }
-    # Next Round
-    boardCards$ro <- boardCards$ro + 1
+    
   }
   addChits <- location
   if (round > peaceRounds){
@@ -318,9 +317,6 @@ AITurn <- function(boardCards, playerCards){
     boardCards$im[21 + choice$index] <- playerCards$im[-c(boardCards$p1, boardCards$p2)][1]
     boardCards$p2 <- c(boardCards$p2, max(boardCards$p1, boardCards$p2) + 1)
     
-    # Change player's turn
-    boardCards$tu <- 1
-    
     # Update AIs choice
     boardCards$la <- choice$location
   }
@@ -329,6 +325,7 @@ AITurn <- function(boardCards, playerCards){
   boardCards$sc[1] <- sum(boardCards$c1, boardCards$ch[1]) + 2
   boardCards$sc[2] <- sum(boardCards$c2, boardCards$ch[2])
   
+  boardCards$tu <- 1
   return(boardCards)
 }
 
@@ -374,9 +371,7 @@ PlayerTurn <- function(boardCards, playerCards, se, id2){
     boardCards$im[se] <- "www/barebones.png"
   }
   
-  # Change player's turn
   boardCards$tu <- 2
-  
   return(boardCards)
 }
 

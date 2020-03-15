@@ -2,7 +2,7 @@
 #    By : bjhufstetler
 #  Date : 2020-03-06
 
-# Uses: {base, shiny, glue}
+# Uses: {base, shiny, glue, dplyr}
 
 # TODO: 
 # 1) display captured chits, COMPLETE - maybe 

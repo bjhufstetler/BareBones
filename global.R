@@ -104,5 +104,5 @@ distribution <- as.matrix(
 
 
 
-shareurl <- "https://twitter.com/intent/tweet?text=Play%20Bare%20Bones%20today%20here:&url=https://bjhufstetler.shinyapps.io/BareBones"
+shareurl <- "https://twitter.com/intent/tweet?text=I%20just%20played%20%23BareBones%20at%20http%3A%2F%2Fbjhufstetler.shinyapps.io%2FBareBones"
 

@@ -43,7 +43,7 @@ fluidPage(
                 ),
   
   # White Player's captured chits
-  absolutePanel(bottom = 350, left = 50, width = 200, 
+  absolutePanel(bottom = 340, left = 50, width = 200, 
                 tags$div(
                   style = "width: 160px; margin: center;",
                   tags$h4("White Player's Captives"),
